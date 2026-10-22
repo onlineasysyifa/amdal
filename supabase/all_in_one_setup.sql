@@ -470,7 +470,10 @@ SELECT
         ELSE 'Aman'
     END AS status_masa_simpan
 FROM combined_types ct
-JOIN waste_types wt ON wt.id = ct.waste_type_id;
+JOIN waste_types wt ON wt.id = ct.waste_type_id
+LEFT JOIN receipts_agg r ON r.waste_type_id = ct.waste_type_id AND r.satuan = ct.satuan
+LEFT JOIN transports_agg t ON t.waste_type_id = ct.waste_type_id AND t.satuan = ct.satuan
+LEFT JOIN adjustments_agg a ON a.waste_type_id = ct.waste_type_id AND a.satuan = ct.satuan;
 
 -- 4. RLS ENABLING & POLICIES
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
