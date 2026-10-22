@@ -305,7 +305,8 @@ const MastersModule = {
       filtered = filtered.filter(t => 
         t.nama_perusahaan.toLowerCase().includes(term) ||
         t.no_izin_klhk.toLowerCase().includes(term) ||
-        (t.no_kendaraan_default && t.no_kendaraan_default.toLowerCase().includes(term))
+        (t.no_kendaraan_default && t.no_kendaraan_default.toLowerCase().includes(term)) ||
+        (t.jenis_layanan && t.jenis_layanan.toLowerCase().includes(term))
       );
     }
 
@@ -314,24 +315,47 @@ const MastersModule = {
       return;
     }
 
-    tbody.innerHTML = filtered.map((t, idx) => `
-      <tr>
-        <td class="text-center">${idx + 1}</td>
-        <td><strong>${t.nama_perusahaan}</strong></td>
-        <td><small class="badge badge-soft-info">${t.no_izin_klhk}</small></td>
-        <td>${Formatters.formatDateIndo(t.masa_berlaku_izin)}</td>
-        <td>${t.telepon || "-"}</td>
-        <td><span class="badge bg-secondary">${t.no_kendaraan_default || "-"}</span></td>
-        <td class="text-end">
-          <button class="btn btn-sm btn-outline-secondary me-1" onclick="MastersModule.openTransporterModal('${t.id}')" title="Edit">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-${t.is_active ? 'warning' : 'success'}" onclick="MastersModule.toggleTransporterStatus('${t.id}', ${!t.is_active})" title="${t.is_active ? 'Nonaktifkan' : 'Aktifkan'}">
-            <i class="bi bi-power"></i>
-          </button>
-        </td>
-      </tr>
-    `).join("");
+    const today = new Date().toISOString().slice(0, 10);
+
+    tbody.innerHTML = filtered.map((t, idx) => {
+      const isExpired = t.masa_berlaku_izin < today;
+      const expClass = isExpired ? "text-danger fw-bold" : "";
+      return `
+        <tr>
+          <td class="text-center">${idx + 1}</td>
+          <td>
+            <strong>${t.nama_perusahaan}</strong><br>
+            <small class="text-muted">${t.jenis_layanan || "-"}</small>
+          </td>
+          <td><small class="badge badge-soft-info">${t.no_izin_klhk}</small></td>
+          <td class="${expClass}">
+            ${Formatters.formatDateIndo(t.masa_berlaku_izin)}
+            ${isExpired ? '<span class="badge bg-danger ms-1">Kedaluwarsa</span>' : ''}
+          </td>
+          <td>
+            ${t.telepon || "-"}<br>
+            <small class="text-muted">${t.kontak_person || ""}</small>
+          </td>
+          <td>
+            <span class="badge bg-secondary">${t.no_kendaraan_default || "-"}</span><br>
+            <small class="text-muted">${t.cakupan_wilayah || ""}</small>
+          </td>
+          <td class="text-center">
+            <span class="badge ${t.is_active ? 'badge-soft-success' : 'badge-soft-danger'}">
+              ${t.is_active ? 'Aktif' : 'Non-Aktif'}
+            </span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-secondary me-1" onclick="MastersModule.openTransporterModal('${t.id}')" title="Edit">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-${t.is_active ? 'warning' : 'success'}" onclick="MastersModule.toggleTransporterStatus('${t.id}', ${!t.is_active})" title="${t.is_active ? 'Nonaktifkan' : 'Aktifkan'}">
+              <i class="bi bi-power"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
   },
 
   openTransporterModal(id = null) {
@@ -352,6 +376,9 @@ const MastersModule = {
       form.elements["masa_berlaku_izin"].value = item.masa_berlaku_izin;
       form.elements["kontak_person"].value = item.kontak_person || "";
       form.elements["telepon"].value = item.telepon || "";
+      form.elements["email"].value = item.email || "";
+      form.elements["jenis_layanan"].value = item.jenis_layanan || "";
+      form.elements["cakupan_wilayah"].value = item.cakupan_wilayah || "";
       form.elements["alamat"].value = item.alamat || "";
       form.elements["no_kendaraan_default"].value = item.no_kendaraan_default || "";
       form.elements["is_active"].checked = !!item.is_active;
@@ -376,6 +403,9 @@ const MastersModule = {
       masa_berlaku_izin: form.elements["masa_berlaku_izin"].value,
       kontak_person: form.elements["kontak_person"].value.trim(),
       telepon: form.elements["telepon"].value.trim(),
+      email: form.elements["email"].value.trim(),
+      jenis_layanan: form.elements["jenis_layanan"].value.trim(),
+      cakupan_wilayah: form.elements["cakupan_wilayah"].value.trim(),
       alamat: form.elements["alamat"].value.trim(),
       no_kendaraan_default: form.elements["no_kendaraan_default"].value.trim(),
       is_active: form.elements["is_active"].checked

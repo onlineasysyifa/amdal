@@ -1,4 +1,47 @@
 [
-  { "id": "t1", "nama_perusahaan": "PT. Wastec International", "no_izin_klhk": "SK.MenLHK/001/PLB3/2023", "masa_berlaku_izin": "2027-12-31", "kontak_person": "Bpk. Hasan", "telepon": "021-8972100", "alamat": "Jl. Raya Bekasi Km 28, Cikarang", "no_kendaraan_default": "B 9283 TIS", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "t2", "nama_perusahaan": "PT. Prasadha Pamunah Limbah Industri (PPLI)", "no_izin_klhk": "SK.MenLHK/045/PLB3/2022", "masa_berlaku_izin": "2028-06-30", "kontak_person": "Ibu Sari", "telepon": "021-8674000", "alamat": "Jl. Raya Narogong Km 26, Bogor", "no_kendaraan_default": "B 9042 KFU", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" }
+  {
+    "id": "t01",
+    "nama_perusahaan": "PT TRIARTA",
+    "no_izin_klhk": "SK.703/Menlhk/Setjen/PLB3/8/2022",
+    "masa_berlaku_izin": "2027-08-31",
+    "kontak_person": "Manager Operasional PT TRIARTA",
+    "telepon": "021-5490-1234",
+    "alamat": "Jl. Rawa Gelam V No. 9, Kawasan Industri Pulogadung, Jakarta Timur 13930",
+    "email": "operasional@triarta.co.id",
+    "no_kendaraan_default": "B 9317 TRI",
+    "jenis_layanan": "Pengangkutan & Pengolahan Limbah B3 Medis (Insinerator)",
+    "cakupan_wilayah": "Jabodetabek & Jawa Barat",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "t02",
+    "nama_perusahaan": "PT. Wastec International",
+    "no_izin_klhk": "SK.MenLHK/001/PLB3/2023",
+    "masa_berlaku_izin": "2027-12-31",
+    "kontak_person": "Customer Service Wastec",
+    "telepon": "021-8972100",
+    "alamat": "Jl. Raya Bekasi Km 28, Cikarang, Bekasi 17530",
+    "email": "cs@wastec.co.id",
+    "no_kendaraan_default": "B 9283 TIS",
+    "jenis_layanan": "Pengangkutan & Pengolahan Limbah B3 Industri & Medis",
+    "cakupan_wilayah": "Nasional",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "t03",
+    "nama_perusahaan": "PT. Prasadha Pamunah Limbah Industri (PPLI)",
+    "no_izin_klhk": "SK.MenLHK/045/PLB3/2022",
+    "masa_berlaku_izin": "2028-06-30",
+    "kontak_person": "Divisi Pemasaran PPLI",
+    "telepon": "021-8674000",
+    "alamat": "Jl. Raya Narogong Km 26, Klapanunggal, Bogor 16820",
+    "email": "marketing@ppli.co.id",
+    "no_kendaraan_default": "B 9042 KFU",
+    "jenis_layanan": "Pengangkutan, Pengolahan & Pemusnahan Limbah B3 (Insinerator & Landfill)",
+    "cakupan_wilayah": "Nasional",
+    "is_active": false,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  }
 ]

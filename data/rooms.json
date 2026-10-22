@@ -1,9 +1,152 @@
 [
-  { "id": "r1", "kode_ruangan": "IGD-01", "nama_ruangan": "Instalasi Gawat Darurat (IGD)", "penanggung_jawab": "Ns. Budi Santoso, S.Kep", "lokasi_gedung": "Gedung A Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "r2", "kode_ruangan": "POLI-01", "nama_ruangan": "Poli Umum", "penanggung_jawab": "dr. Siti Aminah", "lokasi_gedung": "Gedung A Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "r3", "kode_ruangan": "POLI-02", "nama_ruangan": "Poli Gigi & Mulut", "penanggung_jawab": "drg. Hendra Pratama", "lokasi_gedung": "Gedung A Lt 2", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "r4", "kode_ruangan": "LAB-01", "nama_ruangan": "Laboratorium Medis", "penanggung_jawab": "Rina Wulandari, A.Md.AK", "lokasi_gedung": "Gedung B Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "r5", "kode_ruangan": "RAWAT-01", "nama_ruangan": "Ruang Rawat Inap", "penanggung_jawab": "Ns. Rudi Hartono, S.Kep", "lokasi_gedung": "Gedung B Lt 2", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "r6", "kode_ruangan": "VK-01", "nama_ruangan": "Kamar Bersalin (VK)", "penanggung_jawab": "Bdn. Nur Hasanah, S.Tr.Keb", "lokasi_gedung": "Gedung B Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
-  { "id": "r7", "kode_ruangan": "FAR-01", "nama_ruangan": "Apotek / Farmasi", "penanggung_jawab": "Apt. Dewi Rahayu, S.Farm", "lokasi_gedung": "Gedung A Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" }
+  {
+    "id": "r01",
+    "kode_ruangan": "IGD-01",
+    "nama_ruangan": "Instalasi Gawat Darurat (IGD)",
+    "penanggung_jawab": "Kepala Ruangan IGD",
+    "lokasi_gedung": "Gedung A – Lantai 1",
+    "keterangan": "Ruangan penanganan pasien darurat 24 jam. Penghasil limbah infeksius, benda tajam, dan farmasi tinggi.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r02",
+    "kode_ruangan": "RAWAT-01",
+    "nama_ruangan": "Ruang Rawat Inap Umum",
+    "penanggung_jawab": "Kepala Ruangan Rawat Inap",
+    "lokasi_gedung": "Gedung B – Lantai 2",
+    "keterangan": "Perawatan pasien dewasa umum. Penghasil limbah infeksius harian, cairan tubuh, dan farmasi.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r03",
+    "kode_ruangan": "RAWAT-02",
+    "nama_ruangan": "Ruang Rawat Inap Anak (Pediatri)",
+    "penanggung_jawab": "Kepala Ruangan Pediatri",
+    "lokasi_gedung": "Gedung B – Lantai 3",
+    "keterangan": "Perawatan pasien anak. Penghasil limbah infeksius dan farmasi anak.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r04",
+    "kode_ruangan": "VK-01",
+    "nama_ruangan": "Kamar Bersalin & VK",
+    "penanggung_jawab": "Kepala Ruangan Kebidanan",
+    "lokasi_gedung": "Gedung B – Lantai 1",
+    "keterangan": "Persalinan normal dan tindakan kebidanan. Penghasil limbah patologi, plasenta, cairan amnion, dan infeksius tinggi.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r05",
+    "kode_ruangan": "ICU-01",
+    "nama_ruangan": "Ruang ICU / HCU",
+    "penanggung_jawab": "Kepala Ruangan ICU",
+    "lokasi_gedung": "Gedung B – Lantai 2",
+    "keterangan": "Perawatan intensif. Penghasil limbah infeksius volume tinggi, benda tajam, dan farmasi sitotoksik.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r06",
+    "kode_ruangan": "OK-01",
+    "nama_ruangan": "Kamar Operasi (OK)",
+    "penanggung_jawab": "Kepala Ruangan OK",
+    "lokasi_gedung": "Gedung C – Lantai 2",
+    "keterangan": "Tindakan operasi bedah. Penghasil limbah patologi, jaringan tubuh, benda tajam, dan cairan tubuh.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r07",
+    "kode_ruangan": "POLI-01",
+    "nama_ruangan": "Poli Umum",
+    "penanggung_jawab": "Dokter Penanggung Jawab Poli Umum",
+    "lokasi_gedung": "Gedung A – Lantai 1",
+    "keterangan": "Pemeriksaan pasien rawat jalan umum. Penghasil limbah infeksius dan benda tajam.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r08",
+    "kode_ruangan": "POLI-02",
+    "nama_ruangan": "Poli Gigi & Mulut",
+    "penanggung_jawab": "Dokter Gigi Penanggung Jawab",
+    "lokasi_gedung": "Gedung A – Lantai 1",
+    "keterangan": "Tindakan gigi dan mulut. Penghasil benda tajam (bur, jarum), amalgam, dan limbah infeksius.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r09",
+    "kode_ruangan": "POLI-03",
+    "nama_ruangan": "Poli Spesialis (Dalam, Anak, Kandungan)",
+    "penanggung_jawab": "Dokter Spesialis Penanggung Jawab",
+    "lokasi_gedung": "Gedung A – Lantai 2",
+    "keterangan": "Pemeriksaan spesialis rawat jalan. Penghasil limbah infeksius, benda tajam, dan kontras radiologi.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r10",
+    "kode_ruangan": "LAB-01",
+    "nama_ruangan": "Laboratorium Medis & Patologi Klinik",
+    "penanggung_jawab": "Kepala Laboratorium",
+    "lokasi_gedung": "Gedung A – Lantai 1",
+    "keterangan": "Pemeriksaan spesimen darah, urin, dan jaringan. Penghasil reagen kimia, spesimen infeksius, dan benda tajam.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r11",
+    "kode_ruangan": "RAD-01",
+    "nama_ruangan": "Radiologi & Pencitraan",
+    "penanggung_jawab": "Kepala Radiologi",
+    "lokasi_gedung": "Gedung A – Lantai 1",
+    "keterangan": "Pemeriksaan rontgen, USG, CT-Scan. Penghasil cairan fixer/developer (B3 kimia) dan film bekas.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r12",
+    "kode_ruangan": "FAR-01",
+    "nama_ruangan": "Instalasi Farmasi",
+    "penanggung_jawab": "Apoteker Penanggung Jawab",
+    "lokasi_gedung": "Gedung A – Lantai 1",
+    "keterangan": "Dispensing dan penyimpanan obat. Penghasil obat kedaluwarsa, kemasan bekas obat keras, dan limbah sitotoksik.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r13",
+    "kode_ruangan": "CSSD-01",
+    "nama_ruangan": "CSSD / Sterilisasi Sentral",
+    "penanggung_jawab": "Kepala CSSD",
+    "lokasi_gedung": "Gedung C – Lantai 1",
+    "keterangan": "Sterilisasi alat medis. Penghasil limbah infeksius, kemasan sterilisasi, dan ETO (gas etilen oksida).",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r14",
+    "kode_ruangan": "GIZI-01",
+    "nama_ruangan": "Instalasi Gizi / Dapur",
+    "penanggung_jawab": "Kepala Instalasi Gizi",
+    "lokasi_gedung": "Gedung D – Lantai 1",
+    "keterangan": "Penyediaan makanan pasien. Penghasil limbah sisa makanan dan kemasan bahan makanan.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "r15",
+    "kode_ruangan": "LNDRY-01",
+    "nama_ruangan": "Laundry / Linen",
+    "penanggung_jawab": "Kepala Laundry",
+    "lokasi_gedung": "Gedung D – Lantai 1",
+    "keterangan": "Pencucian linen kotor. Penghasil limbah infeksius dari linen terkontaminasi darah/cairan tubuh.",
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00.000Z"
+  }
 ]
