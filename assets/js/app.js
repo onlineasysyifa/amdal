@@ -152,6 +152,18 @@ const App = {
       });
     }
 
+    // 1b. Register Form
+    const registerForm = document.getElementById("form-register");
+    if (registerForm) {
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = registerForm.elements["reg_name"].value.trim();
+        const email = registerForm.elements["reg_email"].value.trim();
+        const password = registerForm.elements["reg_password"].value;
+        await Auth.handleRegister(name, email, password);
+      });
+    }
+
     // 2. Forgot Password Button
     const btnForgot = document.getElementById("btn-forgot-password");
     if (btnForgot) {

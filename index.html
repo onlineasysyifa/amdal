@@ -1069,41 +1069,90 @@
      MODALS FOR ALL CRUD OPERATIONS
      ========================================================================== -->
 
-<!-- 1. LOGIN MODAL -->
+<!-- 1. LOGIN & REGISTER MODAL -->
 <div class="modal fade" id="modal-login" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow border-0">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-shield-lock me-2"></i>Masuk ke Sistem Klinik Asy-Syifa</h5>
+      <div class="modal-header bg-primary text-white py-2 px-3">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-shield-lock me-2"></i>Akses Sistem Klinik Asy-Syifa</h5>
       </div>
-      <form id="form-login">
-        <div class="modal-body py-4">
-          <div class="text-center mb-3">
-            <img src="assets/img/logo.svg" alt="Logo" width="56" height="56" class="mb-2">
-            <h6 class="fw-bold mb-0">Sistem Informasi IPAL & Limbah B3</h6>
-            <small class="text-muted">Silakan masuk menggunakan akun petugas resmi</small>
+      <div class="modal-body p-4">
+        <div class="text-center mb-3">
+          <img src="assets/img/logo.svg" alt="Logo" width="52" height="52" class="mb-2">
+          <h6 class="fw-bold mb-0">Sistem Informasi IPAL & Limbah B3</h6>
+          <small class="text-muted">Klinik Pratama Asy-Syifa</small>
+        </div>
+
+        <!-- Auth Tabs -->
+        <ul class="nav nav-pills nav-fill mb-3" id="authPillTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active py-1 small fw-bold" data-bs-toggle="pill" data-bs-target="#pill-login">
+              <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link py-1 small fw-bold" data-bs-toggle="pill" data-bs-target="#pill-register">
+              <i class="bi bi-person-plus me-1"></i>Daftar Akun Petugas
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- TAB 1: LOGIN -->
+          <div class="tab-pane fade show active" id="pill-login">
+            <form id="form-login">
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Alamat Email</label>
+                <input type="email" id="login-email" name="email" class="form-control form-control-sm" required placeholder="admin@klinik-asysyifa.com" value="admin@klinik-asysyifa.com">
+              </div>
+              <div class="mb-2">
+                <label class="form-label small fw-bold">Kata Sandi (Password)</label>
+                <input type="password" id="login-password" name="password" class="form-control form-control-sm" required placeholder="••••••••" value="admin123">
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <button type="button" id="btn-forgot-password" class="btn btn-link p-0 small text-decoration-none">Lupa kata sandi?</button>
+              </div>
+
+              <button type="submit" id="btn-submit-login" class="btn btn-primary btn-sm w-100 py-2">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem
+              </button>
+            </form>
+
+            <div class="border-top mt-3 pt-3 text-center">
+              <small class="text-muted d-block mb-2">Ingin mencoba tanpa setup database Supabase?</small>
+              <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="Auth.enableDemoMode()">
+                <i class="bi bi-hdd-network me-1"></i>Gunakan Mode Demo Lokal (Offline)
+              </button>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label small fw-bold">Alamat Email</label>
-            <input type="email" id="login-email" name="email" class="form-control" required placeholder="admin@klinik-asysyifa.com" value="admin@klinik-asysyifa.com">
-          </div>
-          <div class="mb-3">
-            <label class="form-label small fw-bold">Kata Sandi (Password)</label>
-            <input type="password" id="login-password" name="password" class="form-control" required placeholder="••••••••" value="admin123">
-          </div>
+          <!-- TAB 2: REGISTER -->
+          <div class="tab-pane fade" id="pill-register">
+            <div class="alert alert-info py-2 small mb-3">
+              <i class="bi bi-info-circle me-1"></i>Daftarkan akun petugas/sanitarian ke proyek Supabase yang terhubung.
+            </div>
+            <form id="form-register">
+              <div class="mb-2">
+                <label class="form-label small fw-bold">Nama Lengkap Petugas</label>
+                <input type="text" name="reg_name" class="form-control form-control-sm" required placeholder="Contoh: Siti Rahmawati, S.Tr.Kes">
+              </div>
+              <div class="mb-2">
+                <label class="form-label small fw-bold">Alamat Email</label>
+                <input type="email" name="reg_email" class="form-control form-control-sm" required placeholder="petugas@klinik-asysyifa.com">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-bold">Kata Sandi (Minimal 6 karakter)</label>
+                <input type="password" name="reg_password" minlength="6" class="form-control form-control-sm" required placeholder="••••••••">
+              </div>
 
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <button type="button" id="btn-forgot-password" class="btn btn-link p-0 small text-decoration-none">Lupa kata sandi?</button>
-            <small class="text-muted">Demo: <code>admin@klinik-asysyifa.com</code> / <code>admin123</code></small>
+              <button type="submit" id="btn-submit-register" class="btn btn-success btn-sm w-100 py-2">
+                <i class="bi bi-person-plus me-2"></i>Daftarkan Akun Petugas
+              </button>
+            </form>
           </div>
         </div>
-        <div class="modal-footer bg-light">
-          <button type="submit" id="btn-submit-login" class="btn btn-primary w-100">
-            <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>

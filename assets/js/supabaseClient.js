@@ -94,6 +94,37 @@ const SupabaseService = {
     }
   },
 
+  async signUp(email, password, fullName = "Petugas Sanitarian") {
+    if (this.isLive && this.client) {
+      const { data, error } = await this.client.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: "admin"
+          }
+        }
+      });
+      if (error) throw error;
+      if (data.session && data.user) {
+        this.currentUser = data.user;
+        await this.recordAuditLog("SIGNUP", "auth.users", data.user.id, null, { email });
+      }
+      return data;
+    }
+
+    // Local fallback
+    const mockUser = {
+      id: "mock-user-" + Date.now(),
+      email: email,
+      user_metadata: { full_name: fullName, role: "admin" }
+    };
+    localStorage.setItem("asyifa_mock_user", JSON.stringify(mockUser));
+    this.currentUser = mockUser;
+    return { user: mockUser };
+  },
+
   async logout() {
     if (this.isLive && this.client) {
       if (this.currentUser) {
