@@ -8,10 +8,9 @@
  */
 
 const DEFAULT_CONFIG = {
-  // Ganti placeholder di bawah ini dengan kredensial Supabase Project Anda,
-  // atau simpan langsung melalui menu "Pengaturan Aplikasi" di UI.
-  SUPABASE_URL: "https://your-project-id.supabase.co",
-  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder-anon-key",
+  // Kredensial Supabase Project Klinik Asy-Syifa
+  SUPABASE_URL: "https://fojozbzgjxtgfxpbsqex.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_dtf0lywgbW_SbRGRbmVwrQ_e6WoQ5t8",
   
   STORAGE_BUCKET: "clinic-documents",
   
