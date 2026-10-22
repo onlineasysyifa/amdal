@@ -128,12 +128,7 @@ const App = {
       });
     }
 
-    // Auth Login & Logout buttons
-    const btnLoginNav = document.getElementById("btn-login-nav");
-    if (btnLoginNav) {
-      btnLoginNav.addEventListener("click", () => Auth.showLoginModal());
-    }
-
+    // Auth Logout button
     const btnLogoutNav = document.getElementById("btn-logout-nav");
     if (btnLogoutNav) {
       btnLogoutNav.addEventListener("click", () => Auth.handleLogout());
@@ -141,39 +136,7 @@ const App = {
   },
 
   setupGlobalForms() {
-    // 1. Login Form
-    const loginForm = document.getElementById("form-login");
-    if (loginForm) {
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = loginForm.elements["email"].value.trim();
-        const password = loginForm.elements["password"].value;
-        await Auth.handleLogin(email, password);
-      });
-    }
-
-    // 1b. Register Form
-    const registerForm = document.getElementById("form-register");
-    if (registerForm) {
-      registerForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const name = registerForm.elements["reg_name"].value.trim();
-        const email = registerForm.elements["reg_email"].value.trim();
-        const password = registerForm.elements["reg_password"].value;
-        await Auth.handleRegister(name, email, password);
-      });
-    }
-
-    // 2. Forgot Password Button
-    const btnForgot = document.getElementById("btn-forgot-password");
-    if (btnForgot) {
-      btnForgot.addEventListener("click", () => {
-        const email = document.getElementById("login-email")?.value;
-        Auth.handleResetPassword(email);
-      });
-    }
-
-    // 3. Search inputs on tables
+    // Search inputs on master data tables
     this.bindSearchInput("search-rooms", term => MastersModule.renderRoomsTable(term));
     this.bindSearchInput("search-waste-types", term => MastersModule.renderWasteTypesTable(term));
     this.bindSearchInput("search-transporters", term => MastersModule.renderTransportersTable(term));

@@ -90,9 +90,6 @@
           <button id="btn-logout-nav" class="btn btn-sm btn-outline-danger" title="Keluar">
             <i class="bi bi-box-arrow-right me-1"></i>Keluar
           </button>
-          <button id="btn-login-nav" class="btn btn-sm btn-primary d-none">
-            <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
-          </button>
         </div>
       </div>
     </header>
@@ -939,34 +936,14 @@
             </div>
           </div>
 
-          <!-- Supabase Connection Configuration -->
+          <!-- Storage Status -->
           <div class="col-lg-5">
             <div class="content-card mb-3">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold"><i class="bi bi-database-gear me-2 text-primary"></i>Koneksi Supabase</h6>
-                <div id="supabase-connection-status"></div>
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-hdd me-2 text-primary"></i>Status Penyimpanan Data</h6>
               </div>
-              <div class="card-body">
-                <form id="form-supabase-config" onsubmit="SettingsModule.saveSupabaseConfig(event)">
-                  <div class="mb-2">
-                    <label class="form-label small fw-bold">Supabase Project URL</label>
-                    <input type="url" id="cfg-supabase-url" class="form-control form-control-sm" placeholder="https://xxx.supabase.co" required>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label small fw-bold">Supabase Anon Key (Publishable)</label>
-                    <textarea id="cfg-supabase-key" rows="3" class="form-control form-control-sm font-monospace small" placeholder="eyJhbGciOi..." required></textarea>
-                    <small class="text-muted d-block mt-1">Hanya gunakan Anon/Publishable key. Jangan pernah memasukkan secret service key!</small>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <button type="button" id="btn-test-connection" class="btn btn-sm btn-outline-info" onclick="SettingsModule.testSupabaseConnection()">
-                      <i class="bi bi-arrow-repeat me-1"></i>Uji Koneksi
-                    </button>
-                    <div>
-                      <button type="button" class="btn btn-sm btn-outline-secondary me-1" onclick="SettingsModule.resetSupabaseConfig()">Reset</button>
-                      <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
-                    </div>
-                  </div>
-                </form>
+              <div class="card-body" id="storage-status-container">
+                <div class="text-center text-muted py-3"><span class="spinner-border spinner-border-sm"></span> Memuat...</div>
               </div>
             </div>
 
@@ -1069,93 +1046,7 @@
      MODALS FOR ALL CRUD OPERATIONS
      ========================================================================== -->
 
-<!-- 1. LOGIN & REGISTER MODAL -->
-<div class="modal fade" id="modal-login" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow border-0">
-      <div class="modal-header bg-primary text-white py-2 px-3">
-        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-shield-lock me-2"></i>Akses Sistem Klinik Asy-Syifa</h5>
-      </div>
-      <div class="modal-body p-4">
-        <div class="text-center mb-3">
-          <img src="assets/img/logo.svg" alt="Logo" width="52" height="52" class="mb-2">
-          <h6 class="fw-bold mb-0">Sistem Informasi IPAL & Limbah B3</h6>
-          <small class="text-muted">Klinik Pratama Asy-Syifa</small>
-        </div>
 
-        <!-- Auth Tabs -->
-        <ul class="nav nav-pills nav-fill mb-3" id="authPillTabs" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active py-1 small fw-bold" data-bs-toggle="pill" data-bs-target="#pill-login">
-              <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link py-1 small fw-bold" data-bs-toggle="pill" data-bs-target="#pill-register">
-              <i class="bi bi-person-plus me-1"></i>Daftar Akun Petugas
-            </button>
-          </li>
-        </ul>
-
-        <div class="tab-content">
-          <!-- TAB 1: LOGIN -->
-          <div class="tab-pane fade show active" id="pill-login">
-            <form id="form-login">
-              <div class="mb-3">
-                <label class="form-label small fw-bold">Alamat Email Terdaftar di Supabase</label>
-                <input type="email" id="login-email" name="email" class="form-control form-control-sm" required placeholder="contoh: admin@gmail.com">
-              </div>
-              <div class="mb-2">
-                <label class="form-label small fw-bold">Kata Sandi (Password)</label>
-                <input type="password" id="login-password" name="password" class="form-control form-control-sm" required placeholder="••••••••">
-              </div>
-
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <button type="button" id="btn-forgot-password" class="btn btn-link p-0 small text-decoration-none">Lupa kata sandi?</button>
-              </div>
-
-              <button type="submit" id="btn-submit-login" class="btn btn-primary btn-sm w-100 py-2">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem
-              </button>
-            </form>
-
-            <div class="border-top mt-3 pt-3 text-center">
-              <small class="text-muted d-block mb-2">Ingin mencoba tanpa akun Supabase?</small>
-              <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="Auth.enableDemoMode()">
-                <i class="bi bi-hdd-network me-1"></i>Gunakan Mode Demo Lokal (Offline)
-              </button>
-            </div>
-          </div>
-
-          <!-- TAB 2: REGISTER -->
-          <div class="tab-pane fade" id="pill-register">
-            <div class="alert alert-info py-2 small mb-3">
-              <i class="bi bi-info-circle me-1"></i>Daftarkan akun petugas dengan email aktif (seperti <code>@gmail.com</code>).
-            </div>
-            <form id="form-register">
-              <div class="mb-2">
-                <label class="form-label small fw-bold">Nama Lengkap Petugas</label>
-                <input type="text" name="reg_name" class="form-control form-control-sm" required placeholder="Contoh: Siti Rahmawati, S.Tr.Kes">
-              </div>
-              <div class="mb-2">
-                <label class="form-label small fw-bold">Alamat Email (Domain Aktif)</label>
-                <input type="email" name="reg_email" class="form-control form-control-sm" required placeholder="contoh: namaanda@gmail.com">
-              </div>
-              <div class="mb-3">
-                <label class="form-label small fw-bold">Kata Sandi (Minimal 6 karakter)</label>
-                <input type="password" name="reg_password" minlength="6" class="form-control form-control-sm" required placeholder="••••••••">
-              </div>
-
-              <button type="submit" id="btn-submit-register" class="btn btn-success btn-sm w-100 py-2">
-                <i class="bi bi-person-plus me-2"></i>Daftarkan Akun Petugas
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- 2. IPAL FLOW MODAL -->
 <div class="modal fade" id="modal-ipal-flow" tabindex="-1" aria-hidden="true">

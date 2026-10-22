@@ -6,7 +6,7 @@
 const SettingsModule = {
   async init() {
     this.loadClinicProfile();
-    this.renderConnectionStatus();
+    this.renderStorageStatus();
     await this.loadParametersSettings();
   },
 
@@ -47,20 +47,67 @@ const SettingsModule = {
   },
 
   // 2. STATUS PENYIMPANAN DATA
-  renderConnectionStatus() {
-    const statusBadge = document.getElementById("supabase-connection-status");
-    if (statusBadge) {
-      statusBadge.innerHTML = `<span class="badge bg-success"><i class="bi bi-hdd me-1"></i>Mode JSON Lokal — Data tersimpan di browser (localStorage)</span>`;
-    }
+  renderStorageStatus() {
+    const container = document.getElementById("storage-status-container");
+    if (!container) return;
 
-    // Sembunyikan form konfigurasi Supabase jika masih ada di HTML
-    const supabaseConfigCard = document.getElementById("card-supabase-config");
-    if (supabaseConfigCard) supabaseConfigCard.classList.add("d-none");
+    // Hitung total record di localStorage
+    const tables = [
+      "rooms", "waste_types", "ipal_parameters", "transporters",
+      "ipal_flow_records", "ipal_sampling_records", "ipal_maintenance_records",
+      "waste_collections", "waste_collection_items",
+      "tps_receipts", "tps_receipt_items",
+      "waste_transports", "waste_transport_items",
+      "tps_adjustments", "tps_inspections", "corrective_actions"
+    ];
+
+    const rows = tables.map(t => {
+      const raw = localStorage.getItem(`asyifa_${t}`);
+      const count = raw ? JSON.parse(raw).length : 0;
+      return `
+        <tr>
+          <td><code>${t}</code></td>
+          <td class="text-end"><span class="badge badge-soft-info">${count} record</span></td>
+        </tr>
+      `;
+    }).join("");
+
+    const seedVersion = localStorage.getItem("asyifa_seed_version") || "-";
+    const usedKB = Math.round(JSON.stringify(localStorage).length / 1024);
+
+    container.innerHTML = `
+      <div class="alert alert-success py-2 mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-hdd-fill fs-5"></i>
+        <div>
+          <strong>Mode Penyimpanan: JSON Lokal + localStorage</strong><br>
+          <small>Seed versi <strong>${seedVersion}</strong> &nbsp;|&nbsp; Digunakan: <strong>~${usedKB} KB</strong></small>
+        </div>
+      </div>
+      <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+        <table class="table table-sm table-custom">
+          <thead><tr><th>Tabel Data</th><th class="text-end">Jumlah Data</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <button class="btn btn-sm btn-outline-danger mt-3" onclick="SettingsModule.confirmResetData()">
+        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Semua Data ke Seed Awal
+      </button>
+    `;
   },
 
-  async testSupabaseConnection() {
-    const res = await SupabaseService.testConnection();
-    Notify.success(res.message, "Status Penyimpanan Data");
+  async confirmResetData() {
+    const ok = await Notify.confirm(
+      "Seluruh data transaksi (pengumpulan, penerimaan, pengangkutan, IPAL, dll) akan dihapus dan dikembalikan ke data awal. Profil klinik tidak akan terhapus. Lanjutkan?",
+      "Reset Data"
+    );
+    if (!ok) return;
+
+    // Hapus semua tabel kecuali profil klinik
+    const keys = Object.keys(localStorage).filter(k => k.startsWith("asyifa_") && k !== "asyifa_clinic_profile");
+    keys.forEach(k => localStorage.removeItem(k));
+
+    Notify.success("Data berhasil direset. Halaman akan dimuat ulang...");
+    setTimeout(() => window.location.reload(), 1200);
   },
 
   // 3. PARAMETER BAKU MUTU IPAL
@@ -68,7 +115,6 @@ const SettingsModule = {
     const tbody = document.getElementById("tbody-parameters-settings");
     if (!tbody) return;
 
-    // Pastikan IpalModule sudah punya parameters
     if (!IpalModule.parameters || !IpalModule.parameters.length) {
       await IpalModule.loadParameters();
     }
