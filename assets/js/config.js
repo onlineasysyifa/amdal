@@ -9,8 +9,11 @@
 
 const DEFAULT_CONFIG = {
   // Kredensial Supabase Project Klinik Asy-Syifa
+  // Nilai ini akan diganti oleh CI/CD via GitHub Secrets saat deploy ke GitHub Pages.
+  // Untuk development lokal, isi SUPABASE_ANON_KEY dengan JWT anon key dari:
+  // Supabase Dashboard → Project Settings → API → anon public (format: eyJ...)
   SUPABASE_URL: "https://fojozbzgjxtgfxpbsqex.supabase.co",
-  SUPABASE_ANON_KEY: "sb_publishable_dtf0lywgbW_SbRGRbmVwrQ_e6WoQ5t8",
+  SUPABASE_ANON_KEY: "SUPABASE_ANON_KEY_PLACEHOLDER",
   
   STORAGE_BUCKET: "clinic-documents",
   

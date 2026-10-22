@@ -116,6 +116,13 @@ const MastersModule = {
       is_active: form.elements["is_active"].checked
     };
 
+    const submitBtn = form.querySelector('[type="submit"]');
+    const originalLabel = submitBtn ? submitBtn.innerHTML : "";
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...`;
+    }
+
     try {
       if (id) {
         await SupabaseService.update("rooms", id, data);
@@ -127,7 +134,13 @@ const MastersModule = {
       bootstrap.Modal.getInstance(document.getElementById("modal-room")).hide();
       await this.loadRooms();
     } catch (err) {
-      Notify.error(err.message, "Gagal Menyimpan");
+      console.error("saveRoom error:", err);
+      Notify.error(err.message || "Terjadi kesalahan saat menyimpan data ruangan.", "Gagal Menyimpan");
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalLabel;
+      }
     }
   },
 

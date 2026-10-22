@@ -11,7 +11,10 @@ const SupabaseService = {
   init() {
     const config = window.APP_CONFIG;
     const isValidUrl = config.SUPABASE_URL && !config.SUPABASE_URL.includes("your-project-id");
-    const isValidKey = config.SUPABASE_ANON_KEY && !config.SUPABASE_ANON_KEY.includes("placeholder-anon-key");
+    // Supabase SDK v2 requires a JWT anon key (starts with "eyJ"), not the newer sb_publishable_ format
+    const isValidKey = config.SUPABASE_ANON_KEY &&
+      !config.SUPABASE_ANON_KEY.includes("placeholder-anon-key") &&
+      config.SUPABASE_ANON_KEY.startsWith("eyJ");
 
     if (window.supabase && isValidUrl && isValidKey) {
       try {
@@ -22,13 +25,18 @@ const SupabaseService = {
           }
         });
         this.isLive = true;
-        console.log("Supabase Client initialized successfully in LIVE mode.");
+        console.log("✅ Supabase Client initialized successfully in LIVE mode.");
       } catch (err) {
-        console.error("Failed to initialize Supabase client:", err);
+        console.error("❌ Failed to initialize Supabase client:", err);
         this.isLive = false;
+        this.initLocalMockData();
       }
     } else {
-      console.warn("Supabase credentials not configured or placeholder detected. Operating in Local Demo Mode.");
+      if (config.SUPABASE_ANON_KEY && config.SUPABASE_ANON_KEY.startsWith("sb_publishable_")) {
+        console.warn("⚠️ SUPABASE_ANON_KEY menggunakan format 'sb_publishable_' yang tidak didukung oleh SDK v2. Gunakan JWT anon key dari Supabase Dashboard → Project Settings → API. Berjalan dalam mode Demo Lokal.");
+      } else {
+        console.warn("⚠️ Kredensial Supabase belum dikonfigurasi. Berjalan dalam mode Demo Lokal.");
+      }
       this.isLive = false;
       this.initLocalMockData();
     }
@@ -254,54 +262,39 @@ const SupabaseService = {
   async insert(table, records) {
     const list = Array.isArray(records) ? records : [records];
     if (this.isLive && this.client) {
-      try {
-        const { data, error } = await this.client.from(table).insert(list).select();
-        if (error) throw error;
-        if (data && data[0]) {
-          await this.recordAuditLog("INSERT", table, data[0].id || "new", null, data[0]);
-        }
-        return data;
-      } catch (err) {
-        console.warn(`Supabase insert error on table '${table}': ${err.message}. Menyimpan ke database lokal.`);
-        return this.mockInsert(table, list);
+      const { data, error } = await this.client.from(table).insert(list).select();
+      if (error) throw new Error(`[Supabase] Gagal menyimpan ke tabel '${table}': ${error.message} (code: ${error.code})`);
+      if (data && data[0]) {
+        await this.recordAuditLog("INSERT", table, data[0].id || "new", null, data[0]);
       }
+      return data;
     }
 
-    // Mock DB Insert
+    // Mock DB Insert (demo/offline mode)
     return this.mockInsert(table, list);
   },
 
   async update(table, id, values) {
     if (this.isLive && this.client) {
-      try {
-        const { data, error } = await this.client.from(table).update(values).eq("id", id).select();
-        if (error) throw error;
-        await this.recordAuditLog("UPDATE", table, id, null, values);
-        return data;
-      } catch (err) {
-        console.warn(`Supabase update error on table '${table}': ${err.message}. Memperbarui di database lokal.`);
-        return this.mockUpdate(table, id, values);
-      }
+      const { data, error } = await this.client.from(table).update(values).eq("id", id).select();
+      if (error) throw new Error(`[Supabase] Gagal memperbarui tabel '${table}': ${error.message} (code: ${error.code})`);
+      await this.recordAuditLog("UPDATE", table, id, null, values);
+      return data;
     }
 
-    // Mock DB Update
+    // Mock DB Update (demo/offline mode)
     return this.mockUpdate(table, id, values);
   },
 
   async delete(table, id) {
     if (this.isLive && this.client) {
-      try {
-        const { error } = await this.client.from(table).delete().eq("id", id);
-        if (error) throw error;
-        await this.recordAuditLog("DELETE", table, id, null, null);
-        return true;
-      } catch (err) {
-        console.warn(`Supabase delete error on table '${table}': ${err.message}. Menghapus di database lokal.`);
-        return this.mockDelete(table, id);
-      }
+      const { error } = await this.client.from(table).delete().eq("id", id);
+      if (error) throw new Error(`[Supabase] Gagal menghapus dari tabel '${table}': ${error.message} (code: ${error.code})`);
+      await this.recordAuditLog("DELETE", table, id, null, null);
+      return true;
     }
 
-    // Mock DB Delete
+    // Mock DB Delete (demo/offline mode)
     return this.mockDelete(table, id);
   },
 

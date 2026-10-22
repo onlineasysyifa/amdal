@@ -26,6 +26,25 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - name: Inject Supabase Credentials
+        env:
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        run: |
+          # Replace placeholder anon key with JWT from GitHub Secret
+          if [ -n "$SUPABASE_ANON_KEY" ]; then
+            sed -i "s|SUPABASE_ANON_KEY_PLACEHOLDER|${SUPABASE_ANON_KEY}|g" assets/js/config.js
+            echo "✅ SUPABASE_ANON_KEY injected."
+          else
+            echo "⚠️  Secret SUPABASE_ANON_KEY tidak ditemukan — aplikasi akan berjalan dalam mode Demo Lokal."
+          fi
+
+          # Optionally override the Supabase URL if set in secrets
+          if [ -n "$SUPABASE_URL" ]; then
+            sed -i "s|https://fojozbzgjxtgfxpbsqex.supabase.co|${SUPABASE_URL}|g" assets/js/config.js
+            echo "✅ SUPABASE_URL injected."
+          fi
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
         with:
