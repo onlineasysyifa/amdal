@@ -1,22 +1,14 @@
 /**
  * SISTEM INFORMASI PENGELOLAAN IPAL DAN LIMBAH B3 KLINIK ASY-SYIFA
- * Konfigurasi Supabase dan Pengaturan Global Aplikasi
- * 
- * CATATAN KEAMANAN:
- * - HANYA masukkan SUPABASE_URL dan SUPABASE_ANON_KEY (Publishable Key).
- * - JANGAN PERNAH memasukkan service_role key, database password, atau secret key!
+ * Konfigurasi Aplikasi
+ *
+ * Data disimpan via JSON lokal (folder /data/) + localStorage untuk perubahan user.
+ * Tidak menggunakan koneksi Supabase.
  */
 
-const DEFAULT_CONFIG = {
-  // Kredensial Supabase Project Klinik Asy-Syifa
-  // Nilai ini akan diganti oleh CI/CD via GitHub Secrets saat deploy ke GitHub Pages.
-  // Untuk development lokal, isi SUPABASE_ANON_KEY dengan JWT anon key dari:
-  // Supabase Dashboard → Project Settings → API → anon public (format: eyJ...)
-  SUPABASE_URL: "https://fojozbzgjxtgfxpbsqex.supabase.co",
-  SUPABASE_ANON_KEY: "SUPABASE_ANON_KEY_PLACEHOLDER",
-  
+window.APP_CONFIG = {
   STORAGE_BUCKET: "clinic-documents",
-  
+
   CLINIC: {
     nama: "Klinik Pratama Asy-Syifa",
     nomor_izin: "445/012/DPMPTSP/2023",
@@ -29,17 +21,12 @@ const DEFAULT_CONFIG = {
   }
 };
 
-// Check if credentials are stored in localStorage
-function getAppConfig() {
-  const savedUrl = localStorage.getItem("asyifa_supabase_url");
-  const savedKey = localStorage.getItem("asyifa_supabase_anon_key");
-  
-  return {
-    SUPABASE_URL: savedUrl || window.ENV?.SUPABASE_URL || DEFAULT_CONFIG.SUPABASE_URL,
-    SUPABASE_ANON_KEY: savedKey || window.ENV?.SUPABASE_ANON_KEY || DEFAULT_CONFIG.SUPABASE_ANON_KEY,
-    STORAGE_BUCKET: DEFAULT_CONFIG.STORAGE_BUCKET,
-    CLINIC: DEFAULT_CONFIG.CLINIC
-  };
-}
-
-window.APP_CONFIG = getAppConfig();
+// Override profil klinik jika ada yang sudah disimpan user sebelumnya
+(function () {
+  const saved = localStorage.getItem("asyifa_clinic_profile");
+  if (saved) {
+    try {
+      window.APP_CONFIG.CLINIC = JSON.parse(saved);
+    } catch {}
+  }
+})();

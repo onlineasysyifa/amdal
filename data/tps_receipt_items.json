@@ -1,0 +1,6 @@
+[
+  { "id": "tri-1", "receipt_id": "rec-1", "collection_item_id": "ci-1", "waste_type_id": "w1", "jumlah_diterima": 14.5, "satuan": "kg", "kondisi_kemasan": "Baik" },
+  { "id": "tri-2", "receipt_id": "rec-1", "collection_item_id": "ci-2", "waste_type_id": "w2", "jumlah_diterima": 3.2, "satuan": "kg", "kondisi_kemasan": "Baik" },
+  { "id": "tri-3", "receipt_id": "rec-2", "collection_item_id": "ci-3", "waste_type_id": "w1", "jumlah_diterima": 8.0, "satuan": "kg", "kondisi_kemasan": "Baik" },
+  { "id": "tri-4", "receipt_id": "rec-2", "collection_item_id": "ci-4", "waste_type_id": "w4", "jumlah_diterima": 5.0, "satuan": "liter", "kondisi_kemasan": "Baik" }
+]

@@ -1,0 +1,6 @@
+[
+  { "id": "ci-1", "collection_id": "col-1", "waste_type_id": "w1", "jumlah": 14.5, "satuan": "kg", "jumlah_diterima_tps": 14.5, "keterangan": "Limbah kasa & sarung tangan" },
+  { "id": "ci-2", "collection_id": "col-1", "waste_type_id": "w2", "jumlah": 3.2, "satuan": "kg", "jumlah_diterima_tps": 3.2, "keterangan": "Safety box terisi 3/4" },
+  { "id": "ci-3", "collection_id": "col-2", "waste_type_id": "w1", "jumlah": 8.0, "satuan": "kg", "jumlah_diterima_tps": 8.0, "keterangan": "Limbah infeksius lab" },
+  { "id": "ci-4", "collection_id": "col-2", "waste_type_id": "w4", "jumlah": 5.0, "satuan": "liter", "jumlah_diterima_tps": 5.0, "keterangan": "Sisa reagen hematologi" }
+]

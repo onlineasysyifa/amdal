@@ -1,0 +1,9 @@
+[
+  { "id": "r1", "kode_ruangan": "IGD-01", "nama_ruangan": "Instalasi Gawat Darurat (IGD)", "penanggung_jawab": "Ns. Budi Santoso, S.Kep", "lokasi_gedung": "Gedung A Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "r2", "kode_ruangan": "POLI-01", "nama_ruangan": "Poli Umum", "penanggung_jawab": "dr. Siti Aminah", "lokasi_gedung": "Gedung A Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "r3", "kode_ruangan": "POLI-02", "nama_ruangan": "Poli Gigi & Mulut", "penanggung_jawab": "drg. Hendra Pratama", "lokasi_gedung": "Gedung A Lt 2", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "r4", "kode_ruangan": "LAB-01", "nama_ruangan": "Laboratorium Medis", "penanggung_jawab": "Rina Wulandari, A.Md.AK", "lokasi_gedung": "Gedung B Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "r5", "kode_ruangan": "RAWAT-01", "nama_ruangan": "Ruang Rawat Inap", "penanggung_jawab": "Ns. Rudi Hartono, S.Kep", "lokasi_gedung": "Gedung B Lt 2", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "r6", "kode_ruangan": "VK-01", "nama_ruangan": "Kamar Bersalin (VK)", "penanggung_jawab": "Bdn. Nur Hasanah, S.Tr.Keb", "lokasi_gedung": "Gedung B Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "r7", "kode_ruangan": "FAR-01", "nama_ruangan": "Apotek / Farmasi", "penanggung_jawab": "Apt. Dewi Rahayu, S.Farm", "lokasi_gedung": "Gedung A Lt 1", "keterangan": "", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" }
+]

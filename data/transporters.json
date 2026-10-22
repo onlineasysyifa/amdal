@@ -1,0 +1,4 @@
+[
+  { "id": "t1", "nama_perusahaan": "PT. Wastec International", "no_izin_klhk": "SK.MenLHK/001/PLB3/2023", "masa_berlaku_izin": "2027-12-31", "kontak_person": "Bpk. Hasan", "telepon": "021-8972100", "alamat": "Jl. Raya Bekasi Km 28, Cikarang", "no_kendaraan_default": "B 9283 TIS", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" },
+  { "id": "t2", "nama_perusahaan": "PT. Prasadha Pamunah Limbah Industri (PPLI)", "no_izin_klhk": "SK.MenLHK/045/PLB3/2022", "masa_berlaku_izin": "2028-06-30", "kontak_person": "Ibu Sari", "telepon": "021-8674000", "alamat": "Jl. Raya Narogong Km 26, Bogor", "no_kendaraan_default": "B 9042 KFU", "is_active": true, "created_at": "2026-01-01T00:00:00.000Z" }
+]
