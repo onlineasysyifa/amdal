@@ -1102,12 +1102,12 @@
           <div class="tab-pane fade show active" id="pill-login">
             <form id="form-login">
               <div class="mb-3">
-                <label class="form-label small fw-bold">Alamat Email</label>
-                <input type="email" id="login-email" name="email" class="form-control form-control-sm" required placeholder="admin@klinik-asysyifa.com" value="admin@klinik-asysyifa.com">
+                <label class="form-label small fw-bold">Alamat Email Terdaftar di Supabase</label>
+                <input type="email" id="login-email" name="email" class="form-control form-control-sm" required placeholder="contoh: admin@gmail.com">
               </div>
               <div class="mb-2">
                 <label class="form-label small fw-bold">Kata Sandi (Password)</label>
-                <input type="password" id="login-password" name="password" class="form-control form-control-sm" required placeholder="••••••••" value="admin123">
+                <input type="password" id="login-password" name="password" class="form-control form-control-sm" required placeholder="••••••••">
               </div>
 
               <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1120,7 +1120,7 @@
             </form>
 
             <div class="border-top mt-3 pt-3 text-center">
-              <small class="text-muted d-block mb-2">Ingin mencoba tanpa setup database Supabase?</small>
+              <small class="text-muted d-block mb-2">Ingin mencoba tanpa akun Supabase?</small>
               <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="Auth.enableDemoMode()">
                 <i class="bi bi-hdd-network me-1"></i>Gunakan Mode Demo Lokal (Offline)
               </button>
@@ -1130,7 +1130,7 @@
           <!-- TAB 2: REGISTER -->
           <div class="tab-pane fade" id="pill-register">
             <div class="alert alert-info py-2 small mb-3">
-              <i class="bi bi-info-circle me-1"></i>Daftarkan akun petugas/sanitarian ke proyek Supabase yang terhubung.
+              <i class="bi bi-info-circle me-1"></i>Daftarkan akun petugas dengan email aktif (seperti <code>@gmail.com</code>).
             </div>
             <form id="form-register">
               <div class="mb-2">
@@ -1138,8 +1138,8 @@
                 <input type="text" name="reg_name" class="form-control form-control-sm" required placeholder="Contoh: Siti Rahmawati, S.Tr.Kes">
               </div>
               <div class="mb-2">
-                <label class="form-label small fw-bold">Alamat Email</label>
-                <input type="email" name="reg_email" class="form-control form-control-sm" required placeholder="petugas@klinik-asysyifa.com">
+                <label class="form-label small fw-bold">Alamat Email (Domain Aktif)</label>
+                <input type="email" name="reg_email" class="form-control form-control-sm" required placeholder="contoh: namaanda@gmail.com">
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-bold">Kata Sandi (Minimal 6 karakter)</label>
