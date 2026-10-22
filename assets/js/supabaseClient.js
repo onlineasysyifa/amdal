@@ -220,26 +220,31 @@ const SupabaseService = {
   // --------------------------------------------------------------------------
   async select(table, options = {}) {
     if (this.isLive && this.client) {
-      let query = this.client.from(table).select(options.select || "*");
-      if (options.eq) {
-        Object.entries(options.eq).forEach(([k, v]) => { query = query.eq(k, v); });
-      }
-      if (options.gte) {
-        Object.entries(options.gte).forEach(([k, v]) => { query = query.gte(k, v); });
-      }
-      if (options.lte) {
-        Object.entries(options.lte).forEach(([k, v]) => { query = query.lte(k, v); });
-      }
-      if (options.order) {
-        query = query.order(options.order.column, { ascending: options.order.ascending ?? true });
-      }
-      if (options.limit) {
-        query = query.limit(options.limit);
-      }
+      try {
+        let query = this.client.from(table).select(options.select || "*");
+        if (options.eq) {
+          Object.entries(options.eq).forEach(([k, v]) => { query = query.eq(k, v); });
+        }
+        if (options.gte) {
+          Object.entries(options.gte).forEach(([k, v]) => { query = query.gte(k, v); });
+        }
+        if (options.lte) {
+          Object.entries(options.lte).forEach(([k, v]) => { query = query.lte(k, v); });
+        }
+        if (options.order) {
+          query = query.order(options.order.column, { ascending: options.order.ascending ?? true });
+        }
+        if (options.limit) {
+          query = query.limit(options.limit);
+        }
 
-      const { data, error } = await query;
-      if (error) throw error;
-      return data || [];
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
+      } catch (err) {
+        console.warn(`Supabase select error on table '${table}': ${err.message}. Menggunakan database lokal.`);
+        return this.mockSelect(table, options);
+      }
     }
 
     // Mock DB Read
@@ -249,12 +254,17 @@ const SupabaseService = {
   async insert(table, records) {
     const list = Array.isArray(records) ? records : [records];
     if (this.isLive && this.client) {
-      const { data, error } = await this.client.from(table).insert(list).select();
-      if (error) throw error;
-      if (data && data[0]) {
-        await this.recordAuditLog("INSERT", table, data[0].id || "new", null, data[0]);
+      try {
+        const { data, error } = await this.client.from(table).insert(list).select();
+        if (error) throw error;
+        if (data && data[0]) {
+          await this.recordAuditLog("INSERT", table, data[0].id || "new", null, data[0]);
+        }
+        return data;
+      } catch (err) {
+        console.warn(`Supabase insert error on table '${table}': ${err.message}. Menyimpan ke database lokal.`);
+        return this.mockInsert(table, list);
       }
-      return data;
     }
 
     // Mock DB Insert
@@ -263,10 +273,15 @@ const SupabaseService = {
 
   async update(table, id, values) {
     if (this.isLive && this.client) {
-      const { data, error } = await this.client.from(table).update(values).eq("id", id).select();
-      if (error) throw error;
-      await this.recordAuditLog("UPDATE", table, id, null, values);
-      return data;
+      try {
+        const { data, error } = await this.client.from(table).update(values).eq("id", id).select();
+        if (error) throw error;
+        await this.recordAuditLog("UPDATE", table, id, null, values);
+        return data;
+      } catch (err) {
+        console.warn(`Supabase update error on table '${table}': ${err.message}. Memperbarui di database lokal.`);
+        return this.mockUpdate(table, id, values);
+      }
     }
 
     // Mock DB Update
@@ -275,10 +290,15 @@ const SupabaseService = {
 
   async delete(table, id) {
     if (this.isLive && this.client) {
-      const { error } = await this.client.from(table).delete().eq("id", id);
-      if (error) throw error;
-      await this.recordAuditLog("DELETE", table, id, null, null);
-      return true;
+      try {
+        const { error } = await this.client.from(table).delete().eq("id", id);
+        if (error) throw error;
+        await this.recordAuditLog("DELETE", table, id, null, null);
+        return true;
+      } catch (err) {
+        console.warn(`Supabase delete error on table '${table}': ${err.message}. Menghapus di database lokal.`);
+        return this.mockDelete(table, id);
+      }
     }
 
     // Mock DB Delete

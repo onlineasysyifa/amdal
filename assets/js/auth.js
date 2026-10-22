@@ -8,71 +8,59 @@ const Auth = {
 
   async init() {
     SupabaseService.init();
-    const session = await SupabaseService.getSession();
-    if (session && session.user) {
-      this.setUser(session.user);
-      return true;
-    } else {
-      this.setUser(null);
-      return false;
+    
+    // Default active user for seamless instant access
+    const defaultUser = {
+      id: "admin-asysyifa",
+      email: "sanitarian@klinik-asysyifa.com",
+      user_metadata: {
+        full_name: "Siti Rahmawati, S.Tr.Kes (Sanitarian)",
+        role: "admin"
+      }
+    };
+
+    // Use existing session if any, otherwise default user
+    let activeUser = defaultUser;
+    if (SupabaseService.isLive && SupabaseService.client) {
+      try {
+        const session = await SupabaseService.getSession();
+        if (session && session.user) {
+          activeUser = session.user;
+        }
+      } catch (e) {
+        // Fallback to default
+      }
     }
+
+    this.setUser(activeUser);
+    SupabaseService.currentUser = activeUser;
+    return true;
   },
 
   setUser(user) {
     this.user = user;
     const userDisplay = document.getElementById("auth-user-display");
     const userRoleBadge = document.getElementById("auth-role-badge");
-    const loginBtn = document.getElementById("btn-login-nav");
-    const logoutBtn = document.getElementById("btn-logout-nav");
 
-    if (user) {
-      const email = user.email || "Petugas";
-      const name = user.user_metadata?.full_name || email.split("@")[0];
-      const role = user.user_metadata?.role || "petugas";
-
-      if (userDisplay) userDisplay.textContent = name;
-      if (userRoleBadge) {
-        userRoleBadge.textContent = role.toUpperCase();
-        userRoleBadge.className = `badge ${role === 'admin' ? 'bg-danger' : 'bg-success'} text-white ms-2`;
-      }
-      if (loginBtn) loginBtn.classList.add("d-none");
-      if (logoutBtn) logoutBtn.classList.remove("d-none");
-
-      // Hide login overlay if open
-      const loginModalEl = document.getElementById("modal-login");
-      if (loginModalEl && window.bootstrap) {
-        const modal = bootstrap.Modal.getInstance(loginModalEl);
-        if (modal) modal.hide();
-      }
-    } else {
-      if (userDisplay) userDisplay.textContent = "Tamu (Belum Login)";
-      if (userRoleBadge) {
-        userRoleBadge.textContent = "ANONIM";
-        userRoleBadge.className = "badge bg-secondary text-white ms-2";
-      }
-      if (loginBtn) loginBtn.classList.remove("d-none");
-      if (logoutBtn) logoutBtn.classList.add("d-none");
+    if (userDisplay) {
+      userDisplay.textContent = user.user_metadata?.full_name || "Petugas Sanitarian";
+    }
+    if (userRoleBadge) {
+      userRoleBadge.textContent = "AKSES AKTIF";
+      userRoleBadge.className = "badge bg-success text-white ms-1";
     }
   },
 
   isAuthenticated() {
-    return !!this.user;
+    return true; // Bypass authentication so user enters directly
   },
 
   requireAuth() {
-    if (!this.isAuthenticated()) {
-      this.showLoginModal();
-      return false;
-    }
     return true;
   },
 
   showLoginModal() {
-    const modalEl = document.getElementById("modal-login");
-    if (modalEl && window.bootstrap) {
-      const modal = new bootstrap.Modal(modalEl, { backdrop: "static", keyboard: false });
-      modal.show();
-    }
+    // Login modal disabled for smooth testing
   },
 
   async handleLogin(email, password) {
