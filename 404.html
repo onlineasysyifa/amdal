@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Mengarahkan ke Sistem Informasi IPAL & Limbah B3 Klinik Asy-Syifa</title>
+  <script>
+    // GitHub Pages SPA router redirect
+    var pathSegmentsToKeep = 1;
+    var l = window.location;
+    var repoPath = l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/');
+    // Redirect to index.html with query/hash intact
+    window.location.replace(
+      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+      repoPath + '/index.html' + (l.hash || '')
+    );
+  </script>
+</head>
+<body>
+  <p>Mengarahkan ke aplikasi...</p>
+</body>
+</html>

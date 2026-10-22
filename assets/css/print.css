@@ -1,0 +1,191 @@
+/* ==============================================================================
+   Sistem Informasi Pengelolaan IPAL dan Limbah B3 Klinik Asy-Syifa
+   Print Stylesheet: Formal Indonesian Clinic A4 Report Layout
+   ============================================================================== */
+
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 20mm 15mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10pt !important;
+    font-family: "Times New Roman", Times, serif, Arial !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide screen-only interactive elements */
+  #sidebar,
+  .top-navbar,
+  .filter-bar,
+  .btn,
+  .no-print,
+  .sidebar-backdrop,
+  .modal-backdrop,
+  .pagination,
+  .dataTables_filter,
+  .nav-tabs,
+  .toast-container {
+    display: none !important;
+  }
+
+  #main-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Formal Clinic Letterhead (Kop Surat) */
+  .kop-surat {
+    border-bottom: 3px double #000000;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    text-align: center;
+  }
+
+  .kop-logo {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 75px;
+    height: 75px;
+  }
+
+  .kop-text h2 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 0 0 2px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .kop-text h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+  }
+
+  .kop-text p {
+    font-size: 8.5pt;
+    margin: 1px 0;
+    color: #222;
+  }
+
+  /* Report Title */
+  .report-header-title {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .report-header-title h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: underline;
+    margin: 0 0 4px 0;
+  }
+
+  .report-header-title p {
+    font-size: 9.5pt;
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* Formal Print Tables */
+  .table-print {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 15px !important;
+    font-size: 9pt !important;
+  }
+
+  .table-print th,
+  .table-print td {
+    border: 1px solid #000000 !important;
+    padding: 5px 7px !important;
+    color: #000000 !important;
+  }
+
+  .table-print th {
+    background-color: #f2f2f2 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  /* Metric summary box in report */
+  .report-summary-box {
+    border: 1px solid #333;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 9pt;
+    background: #fafafa !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Signature Block */
+  .signature-block {
+    margin-top: 25px;
+    page-break-inside: avoid;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9.5pt;
+  }
+
+  .signature-box {
+    text-align: center;
+    width: 200px;
+  }
+
+  .signature-space {
+    height: 65px;
+  }
+
+  .signature-name {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  .signature-nip {
+    font-size: 8.5pt;
+  }
+
+  /* Avoid cutting chart */
+  .chart-print-container {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .chart-print-container canvas {
+    max-width: 100% !important;
+    max-height: 250px !important;
+  }
+}

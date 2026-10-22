@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="asyifaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield / Leaf Shape -->
+  <path d="M50 8 C68 8, 88 18, 88 40 C88 68, 50 92, 50 92 C50 92, 12 68, 12 40 C12 18, 32 8, 50 8 Z" fill="url(#asyifaGrad)" />
+  <!-- Medical Plus / Cross with Leaf touch -->
+  <rect x="44" y="24" width="12" height="34" rx="4" fill="#ffffff" />
+  <rect x="33" y="35" width="34" height="12" rx="4" fill="#ffffff" />
+  <!-- Water Drop / Clean Environment Symbol inside base -->
+  <path d="M50 56 C45 63, 40 68, 40 73 C40 78.5, 44.5 83, 50 83 C55.5 83, 60 78.5, 60 73 C60 68, 55 63, 50 56 Z" fill="#38bdf8" />
+</svg>

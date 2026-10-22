@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Informasi Pengelolaan IPAL dan Limbah B3 - Klinik Asy-Syifa</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  
+  <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Custom Application Stylesheets -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/print.css">
+</head>
+<body>
+
+<div id="app-wrapper">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside id="sidebar">
+    <div class="p-3 border-bottom border-light border-opacity-10 d-flex align-items-center gap-3">
+      <img src="assets/img/logo.svg" alt="Logo" width="40" height="40" class="rounded">
+      <div>
+        <div class="brand-title">Klinik Asy-Syifa</div>
+        <div class="brand-sub">Sistem IPAL & Limbah B3</div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-heading">Utama</div>
+      <a href="#/dashboard" class="nav-link active">
+        <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+      </a>
+
+      <div class="nav-heading">Operasional Pengelolaan</div>
+      <a href="#/ipal" class="nav-link">
+        <i class="bi bi-droplet-half"></i> <span>Modul IPAL</span>
+      </a>
+      <a href="#/waste" class="nav-link">
+        <i class="bi bi-radioactive"></i> <span>Modul Limbah B3</span>
+      </a>
+      <a href="#/inspections" class="nav-link">
+        <i class="bi bi-clipboard2-check"></i> <span>Inspeksi & Korektif</span>
+      </a>
+      <a href="#/reports" class="nav-link">
+        <i class="bi bi-file-earmark-bar-graph"></i> <span>Laporan Terpadu</span>
+      </a>
+
+      <div class="nav-heading">Data Master</div>
+      <a href="#/rooms" class="nav-link">
+        <i class="bi bi-door-open"></i> <span>Master Ruangan</span>
+      </a>
+      <a href="#/waste-types" class="nav-link">
+        <i class="bi bi-tags"></i> <span>Master Jenis Limbah</span>
+      </a>
+      <a href="#/transporters" class="nav-link">
+        <i class="bi bi-truck"></i> <span>Master Pengangkut</span>
+      </a>
+
+      <div class="nav-heading">Sistem & Keamanan</div>
+      <a href="#/settings" class="nav-link">
+        <i class="bi bi-gear"></i> <span>Pengaturan Aplikasi</span>
+      </a>
+      <a href="#/backup" class="nav-link">
+        <i class="bi bi-shield-lock"></i> <span>Backup & Audit Log</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <div id="main-content">
+    <!-- TOP NAVBAR -->
+    <header class="top-navbar d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <button id="btn-toggle-sidebar" class="btn btn-sm btn-outline-secondary d-lg-none" aria-label="Toggle Navigation">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <span class="fw-semibold text-secondary d-none d-sm-inline">
+          <i class="bi bi-hospital me-1 text-success"></i>Klinik Pratama Asy-Syifa - Unit Lingkungan
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <div id="auth-status-container" class="d-flex align-items-center">
+          <div class="text-end me-2 d-none d-md-block">
+            <span id="auth-user-display" class="fw-bold d-block small">Petugas</span>
+            <span id="auth-role-badge" class="badge bg-success text-white">PETUGAS</span>
+          </div>
+          <button id="btn-logout-nav" class="btn btn-sm btn-outline-danger" title="Keluar">
+            <i class="bi bi-box-arrow-right me-1"></i>Keluar
+          </button>
+          <button id="btn-login-nav" class="btn btn-sm btn-primary d-none">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEWS CONTAINER -->
+    <main class="p-3 p-md-4 flex-grow-1">
+
+      <!-- ====================================================================
+           VIEW 1: DASHBOARD
+           ==================================================================== -->
+      <section id="view-dashboard" class="view-section">
+        <!-- Header & Filter -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="fw-bold text-dark mb-1">Dashboard Pengelolaan IPAL & Limbah B3</h4>
+            <p class="text-muted small mb-0">Pemantauan real-time operasional lingkungan fasyankes Klinik Asy-Syifa</p>
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-2 mt-2 mt-md-0">
+            <select id="dashboard-period-filter" class="form-select form-select-sm" style="width: auto;">
+              <option value="today">Hari Ini</option>
+              <option value="month" selected>Bulan Ini</option>
+              <option value="year">Tahun Ini</option>
+              <option value="custom">Rentang Tanggal</option>
+            </select>
+            <div id="custom-date-container" class="d-none d-flex align-items-center gap-1">
+              <input type="date" id="dashboard-start-date" class="form-control form-control-sm">
+              <span class="text-muted small">-</span>
+              <input type="date" id="dashboard-end-date" class="form-control form-control-sm">
+              <button id="btn-apply-custom-date" class="btn btn-sm btn-primary">Terapkan</button>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary" onclick="DashboardModule.refresh()" title="Muat Ulang Data">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="row g-3 mb-4">
+          <!-- Total Debit IPAL -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Debit Air IPAL</span>
+                <div class="metric-icon bg-success-subtle text-success"><i class="bi bi-droplet"></i></div>
+              </div>
+              <div class="metric-value text-success" id="kpi-total-flow">0.00 m³</div>
+              <div class="metric-sub" id="kpi-avg-flow">Rata-rata: 0.00 m³/hari</div>
+            </div>
+          </div>
+
+          <!-- Status Uji Mutu Air -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Evaluasi Baku Mutu</span>
+                <div class="metric-icon bg-info-subtle text-info"><i class="bi bi-check2-circle"></i></div>
+              </div>
+              <div class="metric-value" id="kpi-param-evaluation">Sesuai Standar</div>
+              <div class="metric-sub">PermenLHK No. P.68/2016</div>
+            </div>
+          </div>
+
+          <!-- Total Limbah Diterima TPS -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Diterima di TPS</span>
+                <div class="metric-icon bg-warning-subtle text-warning"><i class="bi bi-box-arrow-in-down"></i></div>
+              </div>
+              <div class="metric-value text-warning" id="kpi-waste-received">0.0 kg</div>
+              <div class="metric-sub">Dari Ruangan: <span id="kpi-waste-collected">0.0 kg</span></div>
+            </div>
+          </div>
+
+          <!-- Saldo Stok TPS Saat Ini -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Saldo Stok TPS</span>
+                <div class="metric-icon bg-danger-subtle text-danger"><i class="bi bi-inbox"></i></div>
+              </div>
+              <div class="metric-value text-danger" id="kpi-stock-tps">0.0 kg</div>
+              <div class="metric-sub" id="kpi-stock-tps-sub">Cair: 0 L | Unit: 0</div>
+            </div>
+          </div>
+
+          <!-- Total Pengangkutan -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Diserahkan ke Transporter</span>
+                <div class="metric-icon bg-primary-subtle text-primary"><i class="bi bi-truck"></i></div>
+              </div>
+              <div class="metric-value text-primary" id="kpi-waste-transported">0.0 kg</div>
+              <div class="metric-sub">Pihak ke-3 Berizin KLHK</div>
+            </div>
+          </div>
+
+          <!-- Status Dokumen Manifest -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Dokumen Pending</span>
+                <div class="metric-icon bg-secondary-subtle text-secondary"><i class="bi bi-file-earmark-text"></i></div>
+              </div>
+              <div class="metric-value" id="kpi-pending-docs">0 Dokumen</div>
+              <div class="metric-sub">Menunggu BAST / Sertifikat</div>
+            </div>
+          </div>
+
+          <!-- Tindakan Korektif Aktif -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Tindakan Korektif</span>
+                <div class="metric-icon bg-danger-subtle text-danger"><i class="bi bi-exclamation-octagon"></i></div>
+              </div>
+              <div class="metric-value" id="kpi-active-actions">0 Tindakan</div>
+              <div class="metric-sub">Temuan terbuka / proses</div>
+            </div>
+          </div>
+
+          <!-- Kapasitas TPS Tersedia -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="card metric-card p-3 border h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="metric-label">Kapasitas TPS</span>
+                <div class="metric-icon bg-success-subtle text-success"><i class="bi bi-building-check"></i></div>
+              </div>
+              <div class="metric-value text-success">1.500 kg</div>
+              <div class="metric-sub">Maksimal daya tampung TPS</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="row g-3">
+          <!-- Flow IPAL Chart -->
+          <div class="col-lg-8">
+            <div class="content-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-graph-up me-2 text-primary"></i>Tren Debit Air Limbah IPAL (m³)</h6>
+              </div>
+              <div class="card-body">
+                <div style="height: 280px;">
+                  <canvas id="dash-chart-flow"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waste by Type Chart -->
+          <div class="col-lg-4">
+            <div class="content-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-pie-chart me-2 text-primary"></i>Timbulan per Jenis Limbah</h6>
+              </div>
+              <div class="card-body">
+                <div style="height: 280px;">
+                  <canvas id="dash-chart-waste-type"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Waste by Room Chart -->
+          <div class="col-lg-6">
+            <div class="content-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-hospital me-2 text-primary"></i>Timbulan Limbah per Ruangan</h6>
+              </div>
+              <div class="card-body">
+                <div style="height: 280px;">
+                  <canvas id="dash-chart-waste-room"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inlet Outlet Comparison Chart -->
+          <div class="col-lg-6">
+            <div class="content-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-bar-chart-steps me-2 text-primary"></i>Efisiensi Pengolahan Inlet vs Outlet</h6>
+              </div>
+              <div class="card-body">
+                <div style="height: 280px;">
+                  <canvas id="dash-chart-inlet-outlet"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 2: MODUL IPAL
+           ==================================================================== -->
+      <section id="view-ipal" class="view-section d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="fw-bold mb-1">Pengelolaan Instalasi Pengolahan Air Limbah (IPAL)</h4>
+            <p class="text-muted small mb-0">Pencatatan debit harian, pemeriksaan laboratorium inlet-outlet, dan pemeliharaan unit</p>
+          </div>
+        </div>
+
+        <!-- Nav tabs for IPAL -->
+        <ul class="nav nav-tabs mb-3" id="ipalTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-ipal-flow">
+              <i class="bi bi-speedometer me-1"></i>Pencatatan Debit Air
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-ipal-sampling">
+              <i class="bi bi-eyedropper me-1"></i>Pemeriksaan Inlet & Outlet
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-ipal-chart">
+              <i class="bi bi-graph-up me-1"></i>Grafik Tren Pemantauan
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-ipal-maintenance">
+              <i class="bi bi-tools me-1"></i>Pemeliharaan Unit
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Subtab 1: Debit Air -->
+          <div class="tab-pane fade show active" id="tab-ipal-flow">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Riwayat Pencatatan Flow Meter IPAL</h6>
+                <button class="btn btn-sm btn-primary" onclick="IpalModule.openFlowModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Catat Debit Baru
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>Tanggal & Waktu</th>
+                        <th>ID Meter</th>
+                        <th>Metode</th>
+                        <th class="text-end">Meter Awal</th>
+                        <th class="text-end">Meter Akhir</th>
+                        <th class="text-end">Volume (m³)</th>
+                        <th>Petugas</th>
+                        <th class="text-center">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-ipal-flow">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Pemeriksaan Inlet Outlet -->
+          <div class="tab-pane fade" id="tab-ipal-sampling">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Pemeriksaan Kualitas Air Limbah (Inlet & Outlet)</h6>
+                <button class="btn btn-sm btn-primary" onclick="IpalModule.openSamplingModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Input Hasil Uji Sampel
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>No Sampel</th>
+                        <th>Tanggal Sampling</th>
+                        <th>Titik</th>
+                        <th>Jenis Pengujian</th>
+                        <th>Parameter Lapangan</th>
+                        <th>Laboratorium</th>
+                        <th class="text-end">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-ipal-sampling">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 3: Grafik Pemantauan -->
+          <div class="tab-pane fade" id="tab-ipal-chart">
+            <div class="content-card">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold">Tren Fluktuasi Debit Harian IPAL (14 Hari Terakhir)</h6>
+              </div>
+              <div class="card-body">
+                <div style="height: 350px;">
+                  <canvas id="chart-ipal-trend"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 4: Pemeliharaan IPAL -->
+          <div class="tab-pane fade" id="tab-ipal-maintenance">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Catatan Pemeliharaan & Servis Komponen IPAL</h6>
+                <button class="btn btn-sm btn-primary" onclick="IpalModule.openMaintenanceModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Catat Pemeliharaan
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>Tanggal</th>
+                        <th>Komponen</th>
+                        <th>Pekerjaan & Kondisi</th>
+                        <th>Petugas</th>
+                        <th>Tindak Lanjut</th>
+                        <th class="text-center">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-ipal-maintenance">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 3: MODUL LIMBAH B3
+           ==================================================================== -->
+      <section id="view-waste" class="view-section d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="fw-bold mb-1">Pengelolaan Limbah Bahan Berbahaya dan Beracun (B3)</h4>
+            <p class="text-muted small mb-0">Rantai pengumpulan ruangan, penerimaan TPS, kartu stok mutasi, dan penyerahan pengangkutan</p>
+          </div>
+        </div>
+
+        <!-- Nav tabs for Limbah B3 -->
+        <ul class="nav nav-tabs mb-3" id="wasteTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-waste-collection">
+              <i class="bi bi-box-arrow-up me-1"></i>1. Pengumpulan dari Ruangan
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-waste-receipt">
+              <i class="bi bi-box-arrow-in-down me-1"></i>2. Penerimaan TPS
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-waste-stock">
+              <i class="bi bi-boxes me-1"></i>3. Saldo Stok TPS & Mutasi
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-waste-transport">
+              <i class="bi bi-truck me-1"></i>4. Pengangkutan Keluar (Pihak Ke-3)
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Subtab 1: Pengumpulan Ruangan -->
+          <div class="tab-pane fade show active" id="tab-waste-collection">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Transaksi Pengumpulan Limbah dari Setiap Ruangan</h6>
+                <button class="btn btn-sm btn-primary" onclick="WasteModule.openCollectionModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Catat Pengumpulan Baru
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>No. Transaksi</th>
+                        <th>Ruangan Asal</th>
+                        <th>Rincian Limbah & Jumlah</th>
+                        <th>Petugas (Ambil / Serah)</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-end">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-waste-collections">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Penerimaan TPS -->
+          <div class="tab-pane fade" id="tab-waste-receipt">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Riwayat Penerimaan Fisik di TPS (Verifikasi Timbang)</h6>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>No. Penerimaan</th>
+                        <th>Tanggal & Waktu</th>
+                        <th>Limbah & Jumlah Diterima</th>
+                        <th>Petugas TPS</th>
+                        <th>Catatan</th>
+                        <th class="text-center">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-tps-receipts">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 3: Saldo Stok TPS -->
+          <div class="tab-pane fade" id="tab-waste-stock">
+            <!-- Stock Cards Grid -->
+            <div class="row g-3 mb-4" id="tps-stock-cards-container">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Ledger / Kartu Mutasi Table -->
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-journal-text me-2"></i>Kartu Riwayat Mutasi Keluar-Masuk TPS</h6>
+                <button class="btn btn-sm btn-outline-secondary" onclick="WasteModule.openAdjustmentModal()">
+                  <i class="bi bi-sliders me-1"></i>Penyesuaian Stok Resmi
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>Tanggal</th>
+                        <th>No. Referensi</th>
+                        <th>Transaksi</th>
+                        <th>Jenis Limbah</th>
+                        <th class="text-end">Masuk (+)</th>
+                        <th class="text-end">Keluar (-)</th>
+                        <th>Keterangan / Kendaraan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-stock-ledger">
+                      <!-- Dynamic ledger rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 4: Pengangkutan Keluar -->
+          <div class="tab-pane fade" id="tab-waste-transport">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Catatan Penyerahan Limbah kepada Transporter Berizin</h6>
+                <button class="btn btn-sm btn-primary" onclick="WasteModule.openTransportModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Input Pengangkutan Baru
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>No. Manifest</th>
+                        <th>Transporter & Kendaraan</th>
+                        <th>Rincian Limbah Diangkut</th>
+                        <th>Tujuan Pengelolaan</th>
+                        <th class="text-center">Status Dokumen</th>
+                        <th class="text-center">Status Pengangkutan</th>
+                        <th class="text-end">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-waste-transports">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 4: MASTER RUANGAN
+           ==================================================================== -->
+      <section id="view-rooms" class="view-section d-none">
+        <div class="content-card">
+          <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+              <h5 class="mb-0 fw-bold">Master Data Ruangan Penghasil Limbah</h5>
+              <small class="text-muted">Daftar poli, laboratorium, instalasi, dan ruang tindakan di Klinik Asy-Syifa</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div class="input-group input-group-sm" style="width: 220px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="search-rooms" class="form-control" placeholder="Cari ruangan...">
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="MastersModule.openRoomModal()">
+                <i class="bi bi-plus-circle me-1"></i>Tambah Ruangan
+              </button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-custom">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width: 40px;">No</th>
+                    <th>Kode Ruangan</th>
+                    <th>Nama Ruangan</th>
+                    <th>Penanggung Jawab</th>
+                    <th>Lokasi Gedung</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-rooms">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 5: MASTER JENIS LIMBAH B3
+           ==================================================================== -->
+      <section id="view-waste-types" class="view-section d-none">
+        <div class="content-card">
+          <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+              <h5 class="mb-0 fw-bold">Master Klasifikasi & Karakteristik Limbah B3 Medis</h5>
+              <small class="text-muted">Standar PP No. 22/2021 dan PermenLHK No. P.56/2015</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div class="input-group input-group-sm" style="width: 220px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="search-waste-types" class="form-control" placeholder="Cari jenis limbah...">
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="MastersModule.openWasteTypeModal()">
+                <i class="bi bi-plus-circle me-1"></i>Tambah Jenis Limbah
+              </button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-custom">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width: 40px;">No</th>
+                    <th>Kode Limbah</th>
+                    <th>Nama Limbah</th>
+                    <th>Kategori</th>
+                    <th>Karakteristik Bahaya</th>
+                    <th class="text-center">Satuan</th>
+                    <th class="text-center">Masa Simpan</th>
+                    <th class="text-end">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-waste-types">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 6: MASTER PENGANGKUT (TRANSPORTER)
+           ==================================================================== -->
+      <section id="view-transporters" class="view-section d-none">
+        <div class="content-card">
+          <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+              <h5 class="mb-0 fw-bold">Master Perusahaan Pengangkut / Pengolah Limbah B3</h5>
+              <small class="text-muted">Perusahaan mitra berizin resmi Kementerian Lingkungan Hidup dan Kehutanan (KLHK)</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div class="input-group input-group-sm" style="width: 220px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" id="search-transporters" class="form-control" placeholder="Cari transporter...">
+              </div>
+              <button class="btn btn-sm btn-primary" onclick="MastersModule.openTransporterModal()">
+                <i class="bi bi-plus-circle me-1"></i>Tambah Transporter
+              </button>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-custom">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width: 40px;">No</th>
+                    <th>Nama Perusahaan Transporter</th>
+                    <th>No. Izin KLHK</th>
+                    <th>Masa Berlaku Izin</th>
+                    <th>Kontak / Telp</th>
+                    <th>Armada Default</th>
+                    <th class="text-end">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-transporters">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 7: INSPEKSI & TINDAK LANJUT KOREKTIF
+           ==================================================================== -->
+      <section id="view-inspections" class="view-section d-none">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="fw-bold mb-1">Pemeriksaan Sarana TPS & Tindak Lanjut Korektif</h4>
+            <p class="text-muted small mb-0">Checklist kelayakan fasilitas TPS dan pemantauan penanganan temuan lapangan</p>
+          </div>
+        </div>
+
+        <ul class="nav nav-tabs mb-3" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-insp-checklist">
+              <i class="bi bi-check2-square me-1"></i>Inspeksi Kelayakan TPS
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-insp-corrective">
+              <i class="bi bi-exclamation-triangle me-1"></i>Log Tindak Lanjut Korektif
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Subtab 1: Inspeksi Sarana TPS -->
+          <div class="tab-pane fade show active" id="tab-insp-checklist">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Riwayat Inspeksi Rutin Sarana & Fasilitas TPS</h6>
+                <button class="btn btn-sm btn-primary" onclick="InspectionsModule.openInspectionModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Input Hasil Inspeksi
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>Tanggal & Waktu</th>
+                        <th>Petugas</th>
+                        <th class="text-center">Suhu</th>
+                        <th>Kebersihan & Ventilasi</th>
+                        <th>Kelengkapan Fasilitas</th>
+                        <th class="text-center">Status Kelayakan</th>
+                        <th>Catatan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-tps-inspections">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Tindak Lanjut Korektif -->
+          <div class="tab-pane fade" id="tab-insp-corrective">
+            <div class="content-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold">Daftar Temuan Masalah & Tindakan Korektif</h6>
+                <button class="btn btn-sm btn-primary" onclick="InspectionsModule.openCorrectiveModal()">
+                  <i class="bi bi-plus-circle me-1"></i>Tambah Temuan Baru
+                </button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-custom">
+                    <thead>
+                      <tr>
+                        <th class="text-center" style="width: 40px;">No</th>
+                        <th>Sumber</th>
+                        <th>Tanggal Temuan</th>
+                        <th>Deskripsi & Tindakan Korektif</th>
+                        <th>Penanggung Jawab</th>
+                        <th>Batas Waktu</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-end">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-corrective-actions">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 8: LAPORAN TERPADU
+           ==================================================================== -->
+      <section id="view-reports" class="view-section d-none">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="fw-bold mb-1">Laporan Terpadu IPAL dan Limbah B3</h4>
+            <p class="text-muted small mb-0">Cetak laporan resmi format A4 dengan Kop Klinik Asy-Syifa dan ekspor CSV</p>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="d-flex align-items-center gap-2">
+            <label class="small fw-bold mb-0">Jenis Laporan:</label>
+            <select id="report-type-select" class="form-select form-select-sm" style="width: auto;">
+              <option value="ipal">Laporan Debit Air Limbah (IPAL)</option>
+              <option value="waste-room">Laporan Timbulan Limbah per Ruangan</option>
+              <option value="stock-mutasi">Laporan Neraca Mutasi Stok TPS</option>
+              <option value="transports">Laporan Pengangkutan & Manifest</option>
+            </select>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 ms-auto">
+            <label class="small fw-bold mb-0">Periode:</label>
+            <input type="date" id="report-start-date" class="form-control form-control-sm">
+            <span class="text-muted small">s/d</span>
+            <input type="date" id="report-end-date" class="form-control form-control-sm">
+            <button id="btn-generate-report" class="btn btn-sm btn-primary">
+              <i class="bi bi-filter me-1"></i>Tampilkan
+            </button>
+          </div>
+        </div>
+
+        <div id="report-output-container">
+          <!-- Dynamic report tables and print previews -->
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 9: PENGATURAN APLIKASI
+           ==================================================================== -->
+      <section id="view-settings" class="view-section d-none">
+        <div class="row g-3">
+          <!-- Clinic Profile Settings -->
+          <div class="col-lg-7">
+            <div class="content-card h-100">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-hospital me-2 text-primary"></i>Profil Klinik & Penanggung Jawab</h6>
+              </div>
+              <div class="card-body">
+                <form id="form-clinic-settings" onsubmit="SettingsModule.saveClinicProfile(event)">
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Nama Fasilitas Pelayanan</label>
+                      <input type="text" name="nama_klinik" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Nomor Izin Operasional</label>
+                      <input type="text" name="nomor_izin" class="form-control form-control-sm" required>
+                    </div>
+                  </div>
+
+                  <div class="mb-2">
+                    <label class="form-label small fw-bold">Alamat Lengkap</label>
+                    <textarea name="alamat" rows="2" class="form-control form-control-sm" required></textarea>
+                  </div>
+
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Nomor Telepon</label>
+                      <input type="text" name="telepon" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Email Resmi</label>
+                      <input type="email" name="email" class="form-control form-control-sm">
+                    </div>
+                  </div>
+
+                  <hr class="my-3">
+
+                  <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Penanggung Jawab Klinik (Dokter/Kepala)</label>
+                      <input type="text" name="kepala_klinik" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Petugas Sanitarian Lingkungan</label>
+                      <input type="text" name="penanggung_jawab_sanitarian" class="form-control form-control-sm" required>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold">NIP / Identitas Petugas Sanitarian</label>
+                    <input type="text" name="nip_sanitarian" class="form-control form-control-sm">
+                  </div>
+
+                  <div class="text-end">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                      <i class="bi bi-save me-1"></i>Simpan Profil Klinik
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Supabase Connection Configuration -->
+          <div class="col-lg-5">
+            <div class="content-card mb-3">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-database-gear me-2 text-primary"></i>Koneksi Supabase</h6>
+                <div id="supabase-connection-status"></div>
+              </div>
+              <div class="card-body">
+                <form id="form-supabase-config" onsubmit="SettingsModule.saveSupabaseConfig(event)">
+                  <div class="mb-2">
+                    <label class="form-label small fw-bold">Supabase Project URL</label>
+                    <input type="url" id="cfg-supabase-url" class="form-control form-control-sm" placeholder="https://xxx.supabase.co" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label small fw-bold">Supabase Anon Key (Publishable)</label>
+                    <textarea id="cfg-supabase-key" rows="3" class="form-control form-control-sm font-monospace small" placeholder="eyJhbGciOi..." required></textarea>
+                    <small class="text-muted d-block mt-1">Hanya gunakan Anon/Publishable key. Jangan pernah memasukkan secret service key!</small>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <button type="button" id="btn-test-connection" class="btn btn-sm btn-outline-info" onclick="SettingsModule.testSupabaseConnection()">
+                      <i class="bi bi-arrow-repeat me-1"></i>Uji Koneksi
+                    </button>
+                    <div>
+                      <button type="button" class="btn btn-sm btn-outline-secondary me-1" onclick="SettingsModule.resetSupabaseConfig()">Reset</button>
+                      <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Parameters Overview -->
+            <div class="content-card">
+              <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-sliders2 me-2 text-primary"></i>Baku Mutu Air Limbah (PermenLHK P.68/2016)</h6>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 250px;">
+                  <table class="table table-sm table-custom">
+                    <thead>
+                      <tr>
+                        <th>Parameter</th>
+                        <th>Kode</th>
+                        <th>Satuan</th>
+                        <th class="text-end">Baku Outlet</th>
+                        <th>Metode SNI</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-parameters-settings">
+                      <!-- Dynamic -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 10: BACKUP & AUDIT LOG
+           ==================================================================== -->
+      <section id="view-backup" class="view-section d-none">
+        <div class="row g-3 mb-4">
+          <!-- Backup Card -->
+          <div class="col-md-6">
+            <div class="card metric-card p-3 border h-100">
+              <h6 class="fw-bold mb-2"><i class="bi bi-cloud-arrow-down me-2 text-primary"></i>Ekspor Cadangan Data (Backup)</h6>
+              <p class="text-muted small mb-3">Unduh seluruh master data, catatan debit IPAL, pengumpulan limbah B3, mutasi TPS, dan pengangkutan dalam format JSON yang aman.</p>
+              <button class="btn btn-sm btn-primary mt-auto" onclick="BackupModule.exportFullBackup()">
+                <i class="bi bi-download me-1"></i>Unduh Berkas Backup (.json)
+              </button>
+            </div>
+          </div>
+
+          <!-- Restore Card -->
+          <div class="col-md-6">
+            <div class="card metric-card p-3 border h-100">
+              <h6 class="fw-bold mb-2"><i class="bi bi-cloud-arrow-up me-2 text-warning"></i>Pemulihan Data (Restore)</h6>
+              <p class="text-muted small mb-2">Pulihkan data dari cadangan berkas JSON yang telah diekspor sebelumnya.</p>
+              <div class="mt-auto">
+                <input type="file" id="inp-restore-file" accept=".json" class="form-control form-control-sm mb-2" onchange="BackupModule.importBackup(this.files[0])">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Log Table -->
+        <div class="content-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2 text-primary"></i>Audit Log Aktivitas Sistem</h6>
+            <button class="btn btn-sm btn-outline-secondary" onclick="BackupModule.loadAuditLogs()">
+              <i class="bi bi-arrow-clockwise me-1"></i>Segarkan Log
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-custom">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width: 40px;">No</th>
+                    <th>Waktu (WIB)</th>
+                    <th>Aksi</th>
+                    <th>Tabel / Entitas</th>
+                    <th>ID Rekaman</th>
+                    <th>Detail Data</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-audit-logs">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-2 px-3 border-top bg-white text-muted small text-center">
+      &copy; 2026 Klinik Pratama Asy-Syifa &bull; Sistem Informasi Pengelolaan IPAL dan Limbah B3
+    </footer>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     MODALS FOR ALL CRUD OPERATIONS
+     ========================================================================== -->
+
+<!-- 1. LOGIN MODAL -->
+<div class="modal fade" id="modal-login" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-shield-lock me-2"></i>Masuk ke Sistem Klinik Asy-Syifa</h5>
+      </div>
+      <form id="form-login">
+        <div class="modal-body py-4">
+          <div class="text-center mb-3">
+            <img src="assets/img/logo.svg" alt="Logo" width="56" height="56" class="mb-2">
+            <h6 class="fw-bold mb-0">Sistem Informasi IPAL & Limbah B3</h6>
+            <small class="text-muted">Silakan masuk menggunakan akun petugas resmi</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Alamat Email</label>
+            <input type="email" id="login-email" name="email" class="form-control" required placeholder="admin@klinik-asysyifa.com" value="admin@klinik-asysyifa.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Kata Sandi (Password)</label>
+            <input type="password" id="login-password" name="password" class="form-control" required placeholder="••••••••" value="admin123">
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <button type="button" id="btn-forgot-password" class="btn btn-link p-0 small text-decoration-none">Lupa kata sandi?</button>
+            <small class="text-muted">Demo: <code>admin@klinik-asysyifa.com</code> / <code>admin123</code></small>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="submit" id="btn-submit-login" class="btn btn-primary w-100">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Masuk ke Sistem
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 2. IPAL FLOW MODAL -->
+<div class="modal fade" id="modal-ipal-flow" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-droplet me-2 text-primary"></i>Catat Angka Flow Meter IPAL</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-ipal-flow" onsubmit="IpalModule.saveFlowRecord(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Tanggal</label>
+              <input type="date" name="tanggal" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Waktu</label>
+              <input type="time" name="waktu" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Identitas Meter</label>
+              <input type="text" name="id_meter" class="form-control form-control-sm" value="FLOW-01" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Metode Pengukuran</label>
+              <select name="metode" class="form-select form-select-sm">
+                <option value="Flowmeter Kumulatif">Flowmeter Kumulatif</option>
+                <option value="Flowmeter Digital">Flowmeter Digital</option>
+                <option value="V-Notch">V-Notch</option>
+                <option value="Manual">Manual</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Meter Awal (m³)</label>
+              <input type="number" step="0.01" name="meter_awal" class="form-control form-control-sm" required oninput="IpalModule.calculateFlowDiff()">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Meter Akhir (m³)</label>
+              <input type="number" step="0.01" name="meter_akhir" class="form-control form-control-sm" required oninput="IpalModule.calculateFlowDiff()">
+            </div>
+          </div>
+
+          <!-- Calculated Volume Box -->
+          <div class="p-2 border rounded bg-light text-center mb-3">
+            <small class="text-muted d-block">Volume Air Limbah Terhitung:</small>
+            <div id="flow-calculated-volume" class="fs-5 fw-bold text-success">0.00 m³</div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Petugas Pencatat</label>
+            <input type="text" name="petugas" class="form-control form-control-sm" required>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Catatan Observasi</label>
+            <textarea name="catatan" rows="2" class="form-control form-control-sm" placeholder="Kondisi aerasi, kejernihan, bau..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Catatan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 3. IPAL SAMPLING MODAL -->
+<div class="modal fade" id="modal-ipal-sampling" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-eyedropper me-2 text-primary"></i>Pemeriksaan Sampel Air Limbah</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-ipal-sampling" onsubmit="IpalModule.saveSamplingRecord(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Nomor Sampel</label>
+              <input type="text" name="no_sampel" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Tanggal Sampling</label>
+              <input type="date" name="tanggal_sampling" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Waktu Sampling</label>
+              <input type="time" name="waktu_sampling" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Titik Sampling</label>
+              <select name="titik_sampling" class="form-select form-select-sm" required>
+                <option value="outlet">Outlet (Air Olahan Keluar)</option>
+                <option value="inlet">Inlet (Air Baku Masuk)</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Jenis Pengujian</label>
+              <select name="jenis_pemeriksaan" class="form-select form-select-sm" required>
+                <option value="laboratorium">Laboratorium Lingkungan Eksternal</option>
+                <option value="lapangan">Pemeriksaan Internal / Lapangan</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Lab Penguji & No. Laporan</label>
+              <div class="d-flex gap-1">
+                <input type="text" name="lab_penguji" class="form-control form-control-sm" placeholder="Nama Lab">
+                <input type="text" name="no_laporan" class="form-control form-control-sm" placeholder="No. LHU">
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">pH Lapangan</label>
+              <input type="number" step="0.01" name="ph_lapangan" class="form-control form-control-sm" placeholder="Contoh: 7.2">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Suhu Lapangan (°C)</label>
+              <input type="number" step="0.1" name="suhu_lapangan" class="form-control form-control-sm" placeholder="Contoh: 28.5">
+            </div>
+          </div>
+
+          <h6 class="fw-bold border-bottom pb-1 mb-2">Parameter Pengujian Laboratorium</h6>
+          <div class="row g-2" id="sampling-parameters-inputs">
+            <!-- Dynamic parameters from active ipal_parameters -->
+          </div>
+
+          <div class="row g-2 mt-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Catatan / Keterangan</label>
+              <textarea name="catatan" rows="2" class="form-control form-control-sm"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Rekomendasi Tindak Lanjut</label>
+              <textarea name="tindak_lanjut" rows="2" class="form-control form-control-sm"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <label class="form-label small fw-bold">Lampiran Berkas LHU / Sertifikat Lab (PDF / JPG)</label>
+            <input type="file" name="lampiran_file" class="form-control form-control-sm">
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Hasil Uji</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 4. SAMPLING DETAILS MODAL -->
+<div class="modal fade" id="modal-sampling-details" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-file-earmark-medical me-2 text-primary"></i>Rincian Hasil Uji Laboratorium</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="sampling-details-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. IPAL MAINTENANCE MODAL -->
+<div class="modal fade" id="modal-ipal-maintenance" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-tools me-2 text-primary"></i>Catat Pemeliharaan Unit IPAL</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-ipal-maintenance" onsubmit="IpalModule.saveMaintenanceRecord(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Tanggal</label>
+              <input type="date" name="tanggal" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Waktu</label>
+              <input type="time" name="waktu" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Komponen / Unit IPAL</label>
+            <input type="text" name="komponen" class="form-control form-control-sm" placeholder="Contoh: Blower Aerasi, Pompa Submersible, Bak Sedimentasi" required>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Pekerjaan yang Dilakukan</label>
+            <input type="text" name="pekerjaan" class="form-control form-control-sm" placeholder="Pembersihan diffuser, pengurasan lumpur, pengecekan oli..." required>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Kondisi Unit Awal</label>
+            <input type="text" name="kondisi_unit" class="form-control form-control-sm" placeholder="Berfungsi normal / tersumbat / bising..." required>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Petugas Pelaksana</label>
+              <input type="text" name="petugas" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Status Pekerjaan</label>
+              <select name="status" class="form-select form-select-sm">
+                <option value="selesai">Selesai</option>
+                <option value="dalam_proses">Dalam Proses</option>
+                <option value="perlu_tindak_lanjut">Perlu Tindak Lanjut</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Tindak Lanjut / Rekomendasi</label>
+            <textarea name="tindak_lanjut" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Pemeliharaan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 6. WASTE COLLECTION MODAL (Multi-item from Room) -->
+<div class="modal fade" id="modal-waste-collection" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-box-arrow-up me-2 text-primary"></i>Pengumpulan Limbah B3 dari Ruangan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-waste-collection" onsubmit="WasteModule.saveCollection(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Nomor Transaksi</label>
+              <input type="text" name="no_transaksi" class="form-control form-control-sm bg-light" readonly required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Tanggal</label>
+              <input type="date" name="tanggal" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Waktu</label>
+              <input type="time" name="waktu" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Ruangan Asal Limbah</label>
+              <select name="room_id" class="form-select form-select-sm" required>
+                <!-- Dynamic rooms -->
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-bold">Petugas Pengambil (Sanitarian)</label>
+              <input type="text" name="petugas_pengambil" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-bold">Petugas Penyerah (Ruangan)</label>
+              <input type="text" name="petugas_penyerah" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0">Daftar Jenis & Jumlah Limbah B3</h6>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="WasteModule.addCollectionItemRow()">
+              <i class="bi bi-plus me-1"></i>Tambah Jenis Limbah
+            </button>
+          </div>
+
+          <div id="collection-items-container">
+            <!-- Dynamic item rows -->
+          </div>
+
+          <div class="row g-2 mt-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Kondisi Kemasan</label>
+              <select name="kondisi_kemasan" class="form-select form-select-sm">
+                <option value="Baik & Rapat">Baik, Rapat, Tidak Bocor</option>
+                <option value="Terisi 3/4 Safety Box">Terisi 3/4 (Khusus Safety Box Benda Tajam)</option>
+                <option value="Perlu Pengemasan Ulang">Perlu Pengemasan Ulang</option>
+              </select>
+            </div>
+            <div class="col-md-6 d-flex align-items-center pt-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="label_sesuai" id="chk-label" checked>
+                <label class="form-check-label small" for="chk-label">
+                  Simbol & Label Biohazard/B3 terpasang sesuai
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <label class="form-label small fw-bold">Catatan</label>
+            <textarea name="catatan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Transaksi Pengumpulan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 7. TPS RECEIPT MODAL (Confirming into TPS Stock) -->
+<div class="modal fade" id="modal-tps-receive" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-box-arrow-in-down me-2"></i>Penerimaan Fisik & Penimbangan di TPS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-tps-receive" onsubmit="WasteModule.saveTpsReceipt(event)">
+        <input type="hidden" name="collection_id">
+        <div class="modal-body">
+          <div class="alert alert-info py-2 small mb-3" id="receive-ref-info">
+            <!-- Ref info -->
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">No. Penerimaan TPS</label>
+              <input type="text" name="no_penerimaan" class="form-control form-control-sm bg-light" readonly required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Tanggal Diterima</label>
+              <input type="date" name="tanggal_terima" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Waktu Diterima</label>
+              <input type="time" name="waktu_terima" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <h6 class="fw-bold mb-2">Verifikasi Jumlah & Kondisi Fisik Diterima</h6>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>Jenis Limbah</th>
+                  <th class="text-end">Jumlah Diambil</th>
+                  <th class="text-end" style="width: 140px;">Jumlah Diterima TPS</th>
+                  <th>Satuan</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-receive-items">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Petugas Penerima TPS</label>
+              <input type="text" name="petugas_tps" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Kondisi Kemasan di TPS</label>
+              <input type="text" name="kondisi_kemasan_tps" class="form-control form-control-sm" value="Sesuai Standar & Rapat">
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <label class="form-label small fw-bold">Catatan Penerimaan</label>
+            <textarea name="catatan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-success">Konfirmasi & Tambah ke Stok TPS</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 8. STOCK ADJUSTMENT MODAL -->
+<div class="modal fade" id="modal-stock-adjustment" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-sliders me-2 text-primary"></i>Penyesuaian Stok TPS Resmi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-stock-adjustment" onsubmit="WasteModule.saveAdjustment(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Nomor Penyesuaian</label>
+              <input type="text" name="no_penyesuaian" class="form-control form-control-sm bg-light" readonly required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Tanggal</label>
+              <input type="date" name="tanggal" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Jenis Limbah B3</label>
+            <select name="waste_type_id" class="form-select form-select-sm" required>
+              <!-- Dynamic waste options -->
+            </select>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Tipe Penyesuaian</label>
+              <select name="tipe_penyesuaian" class="form-select form-select-sm" required>
+                <option value="tambah">Penambahan (+)</option>
+                <option value="kurang">Pengurangan (-)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Jumlah & Satuan</label>
+              <div class="input-group input-group-sm">
+                <input type="number" step="0.01" min="0.01" name="jumlah" class="form-control" placeholder="0.00" required>
+                <input type="text" name="satuan" class="form-control" style="max-width: 60px;" readonly value="kg">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Alasan Penyesuaian / Audit Koreksi</label>
+            <textarea name="alasan" rows="2" class="form-control form-control-sm" placeholder="Contoh: Selisih timbangan berkala, penyusutan cairan, koreksi transaksi..." required></textarea>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Disetujui Oleh</label>
+            <input type="text" name="disetujui_oleh" class="form-control form-control-sm" required>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Koreksi Stok</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 9. WASTE TRANSPORT MODAL (Discharge out to Third Party) -->
+<div class="modal fade" id="modal-waste-transport" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-truck me-2 text-primary"></i>Pengangkutan Limbah B3 Keluar ke Pihak Ke-3</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-waste-transport" onsubmit="WasteModule.saveTransport(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Nomor Manifest / Dokumen</label>
+              <input type="text" name="no_manifest" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Tanggal Angkut</label>
+              <input type="date" name="tanggal_angkut" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-bold">Waktu Angkut</label>
+              <input type="time" name="waktu_angkut" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Perusahaan Pengangkut (Transporter)</label>
+              <select name="transporter_id" class="form-select form-select-sm" required onchange="WasteModule.onTransporterSelect(this)">
+                <!-- Dynamic transporters -->
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-bold">Nomor Polisi Kendaraan</label>
+              <input type="text" id="transport_no_kendaraan" name="no_kendaraan" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small fw-bold">Nama Pengemudi / Sopir</label>
+              <input type="text" name="nama_pengemudi" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="fw-bold mb-0">Rincian Limbah yang Diangkut dari Stok TPS</h6>
+            <button type="button" class="btn btn-xs btn-outline-primary" onclick="WasteModule.addTransportItemRow()">
+              <i class="bi bi-plus me-1"></i>Tambah Baris Limbah
+            </button>
+          </div>
+
+          <div id="transport-items-container">
+            <!-- Dynamic rows -->
+          </div>
+
+          <div class="row g-2 mt-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Tujuan Pengelolaan Akhir</label>
+              <input type="text" name="tujuan_pengelolaan" class="form-control form-control-sm" value="Pemusnahan Insenerator Berizin KLHK" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Status Dokumen Manifest</label>
+              <select name="status_dokumen" class="form-select form-select-sm">
+                <option value="menunggu_bast">Menunggu BAST / Timbang</option>
+                <option value="menunggu_sertifikat">Menunggu Sertifikat Pemusnahan</option>
+                <option value="lengkap">Lengkap</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-2 mt-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Petugas yang Menyerahkan</label>
+              <input type="text" name="petugas_penyerah" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Unggah Bukti Timbang / Manifest (PDF/JPG)</label>
+              <input type="file" name="bukti_timbang_file" class="form-control form-control-sm">
+            </div>
+          </div>
+
+          <div class="mt-2">
+            <label class="form-label small fw-bold">Catatan Tambahan</label>
+            <textarea name="catatan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Konfirmasi Pengangkutan & Potong Stok</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 10. TRANSPORT DETAILS MODAL -->
+<div class="modal fade" id="modal-transport-details" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-file-earmark-text me-2 text-primary"></i>Rincian Pengangkutan Manifest</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="transport-details-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11. ROOM MODAL -->
+<div class="modal fade" id="modal-room" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold" id="modal-room-title"><i class="bi bi-door-open me-2 text-primary"></i>Data Ruangan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-room" onsubmit="MastersModule.saveRoom(event)">
+        <input type="hidden" name="id">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-4">
+              <label class="form-label small fw-bold">Kode Ruangan</label>
+              <input type="text" name="kode_ruangan" class="form-control form-control-sm text-uppercase" placeholder="IGD-01" required>
+            </div>
+            <div class="col-8">
+              <label class="form-label small fw-bold">Nama Ruangan</label>
+              <input type="text" name="nama_ruangan" class="form-control form-control-sm" placeholder="Instalasi Gawat Darurat" required>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Penanggung Jawab Ruangan</label>
+            <input type="text" name="penanggung_jawab" class="form-control form-control-sm" placeholder="Nama petugas/dokter/perawat...">
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Lokasi Gedung / Lantai</label>
+            <input type="text" name="lokasi_gedung" class="form-control form-control-sm" placeholder="Gedung A Lt. 1">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Keterangan</label>
+            <textarea name="keterangan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="is_active" id="chk-room-active" checked>
+            <label class="form-check-label small" for="chk-room-active">Ruangan Aktif</label>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Ruangan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 12. WASTE TYPE MODAL -->
+<div class="modal fade" id="modal-waste-type" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold" id="modal-waste-type-title"><i class="bi bi-tag me-2 text-primary"></i>Master Jenis Limbah B3</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-waste-type" onsubmit="MastersModule.saveWasteType(event)">
+        <input type="hidden" name="id">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-4">
+              <label class="form-label small fw-bold">Kode Limbah</label>
+              <input type="text" name="kode_limbah" class="form-control form-control-sm" placeholder="A337-1" required>
+            </div>
+            <div class="col-8">
+              <label class="form-label small fw-bold">Nama Jenis Limbah</label>
+              <input type="text" name="nama_limbah" class="form-control form-control-sm" placeholder="Limbah Infeksius..." required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Kategori Bahaya</label>
+              <select name="kategori" class="form-select form-select-sm" required>
+                <option value="Kategori 1">Kategori 1</option>
+                <option value="Kategori 2">Kategori 2</option>
+                <option value="Non-B3 / Medis Khusus">Non-B3 / Medis Khusus</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Karakteristik</label>
+              <input type="text" name="karakteristik" class="form-control form-control-sm" placeholder="Infeksius / Beracun / Tertusuk" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Satuan Standar</label>
+              <select name="satuan" class="form-select form-select-sm" required>
+                <option value="kg">kg (Kilogram)</option>
+                <option value="liter">liter (Liter)</option>
+                <option value="unit">unit (Unit/Buah)</option>
+                <option value="box">box (Safety Box)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Maks Masa Simpan (Hari)</label>
+              <input type="number" name="max_storage_days" class="form-control form-control-sm" value="90" required>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Petunjuk Penanganan & Pewadahan</label>
+            <textarea name="petunjuk_penanganan" rows="2" class="form-control form-control-sm" placeholder="Kantong kuning biohazard, safety box..."></textarea>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="is_active" id="chk-waste-active" checked>
+            <label class="form-check-label small" for="chk-waste-active">Status Aktif</label>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Master Limbah</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 13. TRANSPORTER MODAL -->
+<div class="modal fade" id="modal-transporter" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold" id="modal-transporter-title"><i class="bi bi-truck me-2 text-primary"></i>Master Transporter Berizin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-transporter" onsubmit="MastersModule.saveTransporter(event)">
+        <input type="hidden" name="id">
+        <div class="modal-body">
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Nama Perusahaan Transporter</label>
+            <input type="text" name="nama_perusahaan" class="form-control form-control-sm" required>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-7">
+              <label class="form-label small fw-bold">Nomor Izin KLHK</label>
+              <input type="text" name="no_izin_klhk" class="form-control form-control-sm" placeholder="SK.MenLHK/..." required>
+            </div>
+            <div class="col-5">
+              <label class="form-label small fw-bold">Masa Berlaku Izin</label>
+              <input type="date" name="masa_berlaku_izin" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Kontak Person</label>
+              <input type="text" name="kontak_person" class="form-control form-control-sm">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Nomor Telepon</label>
+              <input type="text" name="telepon" class="form-control form-control-sm">
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Nomor Polisi Kendaraan Default</label>
+            <input type="text" name="no_kendaraan_default" class="form-control form-control-sm" placeholder="Contoh: B 9283 TIS">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold">Alamat Kantor / Depo</label>
+            <textarea name="alamat" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="is_active" id="chk-transporter-active" checked>
+            <label class="form-check-label small" for="chk-transporter-active">Mitra Aktif</label>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Transporter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 14. TPS INSPECTION MODAL -->
+<div class="modal fade" id="modal-tps-inspection" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold"><i class="bi bi-clipboard2-check me-2 text-primary"></i>Inspeksi Rutin Sarana TPS</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-tps-inspection" onsubmit="InspectionsModule.saveInspection(event)">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Tanggal</label>
+              <input type="date" name="tanggal" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Waktu</label>
+              <input type="time" name="waktu" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Petugas Sanitarian</label>
+              <input type="text" name="petugas" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Suhu Ruangan TPS (°C)</label>
+              <input type="number" step="0.1" name="suhu_ruangan" class="form-control form-control-sm" placeholder="Contoh: 24.5">
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Kebersihan Ruangan</label>
+              <select name="kebersihan" class="form-select form-select-sm">
+                <option value="baik">Baik & Bersih</option>
+                <option value="cukup">Cukup</option>
+                <option value="kurang">Kurang / Kotor</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Ventilasi Udara</label>
+              <select name="ventilasi" class="form-select form-select-sm">
+                <option value="baik">Baik & Mengalir</option>
+                <option value="cukup">Cukup</option>
+                <option value="kurang">Kurang / Pengap</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="p-2 border rounded bg-light mb-2">
+            <div class="form-check mb-1">
+              <input class="form-check-input" type="checkbox" name="spillage_kit" id="chk-spill" checked>
+              <label class="form-check-label small" for="chk-spill">Spill Kit (Pasir, Klorin, APD, Sapu) Tersedia Lengkap</label>
+            </div>
+            <div class="form-check mb-1">
+              <input class="form-check-input" type="checkbox" name="apar" id="chk-apar" checked>
+              <label class="form-check-label small" for="chk-apar">APAR Siap Pakai & Jarum Indikator Hijau</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="simbol_label" id="chk-simbol" checked>
+              <label class="form-check-label small" for="chk-simbol">Simbol dan Label Biohazard/B3 Jelas Terbaca</label>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Pencahayaan</label>
+              <select name="pencahayaan" class="form-select form-select-sm">
+                <option value="baik">Terang & Cukup</option>
+                <option value="cukup">Cukup</option>
+                <option value="kurang">Kurang / Redup</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Status Kelayakan</label>
+              <select name="status_kelayakan" class="form-select form-select-sm">
+                <option value="layak">Layak Operasional</option>
+                <option value="perlu_perbaikan">Perlu Perbaikan</option>
+                <option value="tidak_layak">Tidak Layak</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Catatan Inspeksi</label>
+            <textarea name="catatan" rows="2" class="form-control form-control-sm"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Hasil Inspeksi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- 15. CORRECTIVE ACTION MODAL -->
+<div class="modal fade" id="modal-corrective-action" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow border-0">
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fs-6 fw-bold" id="modal-corrective-title"><i class="bi bi-exclamation-triangle me-2 text-primary"></i>Tindak Lanjut Korektif</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="form-corrective-action" onsubmit="InspectionsModule.saveCorrectiveAction(event)">
+        <input type="hidden" name="id">
+        <div class="modal-body">
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Sumber Masalah</label>
+              <select name="sumber_masalah" class="form-select form-select-sm" required>
+                <option value="TPS">TPS Limbah B3</option>
+                <option value="IPAL">Instalasi IPAL</option>
+                <option value="Limbah B3">Pengumpulan Limbah B3</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Tanggal Temuan</label>
+              <input type="date" name="tanggal_temuan" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Deskripsi Temuan / Ketidaksesuaian</label>
+            <textarea name="deskripsi_temuan" rows="2" class="form-control form-control-sm" placeholder="Jelaskan kondisi ketidaksesuaian..." required></textarea>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label small fw-bold">Rencana Tindakan Korektif</label>
+            <textarea name="tindakan_korektif" rows="2" class="form-control form-control-sm" placeholder="Langkah perbaikan yang harus dilakukan..." required></textarea>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Penanggung Jawab (PIC)</label>
+              <input type="text" name="penanggung_jawab" class="form-control form-control-sm" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Batas Waktu Penyelesaian</label>
+              <input type="date" name="batas_waktu" class="form-control form-control-sm" required>
+            </div>
+          </div>
+
+          <div class="row g-2 mb-2">
+            <div class="col-6">
+              <label class="form-label small fw-bold">Status Tindakan</label>
+              <select name="status" class="form-select form-select-sm">
+                <option value="open">Terbuka (Open)</option>
+                <option value="in_progress">Dalam Proses</option>
+                <option value="resolved">Selesai (Resolved)</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">Catatan Verifikasi</label>
+              <input type="text" name="catatan_verifikasi" class="form-control form-control-sm" placeholder="Hasil setelah ditindaklanjuti">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-sm btn-primary">Simpan Tindakan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     LIBRARIES & APPLICATION SCRIPTS
+     ========================================================================== -->
+<!-- 1. Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 2. Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<!-- 3. Supabase JavaScript SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+
+<!-- 4. Application Logic -->
+<script src="assets/js/config.js"></script>
+<script src="assets/js/utils/formatters.js"></script>
+<script src="assets/js/utils/notify.js"></script>
+<script src="assets/js/utils/export.js"></script>
+<script src="assets/js/supabaseClient.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/modules/masters.js"></script>
+<script src="assets/js/modules/ipal.js"></script>
+<script src="assets/js/modules/waste.js"></script>
+<script src="assets/js/modules/inspections.js"></script>
+<script src="assets/js/modules/dashboard.js"></script>
+<script src="assets/js/modules/reports.js"></script>
+<script src="assets/js/modules/settings.js"></script>
+<script src="assets/js/modules/backup.js"></script>
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>
