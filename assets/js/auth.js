@@ -7,7 +7,7 @@ const Auth = {
   user: null,
 
   async init() {
-    SupabaseService.init();
+    await SupabaseService.init();
     
     // Default active user for seamless instant access
     const defaultUser = {
